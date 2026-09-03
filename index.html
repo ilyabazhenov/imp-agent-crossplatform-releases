@@ -899,8 +899,17 @@
             версия.textContent = 'Версия ' + String(релиз.tag_name || '').replace(/^v/, '');
 
             const поставить = (узел, правило, размер) => {
+              if (!узел) return;
               const файл = найти(правило);
-              if (!файл || !узел) return;
+              // Файла этой системы в последнем релизе может не быть вовсе — не каждая
+              // версия выходит для обеих. Тогда ссылка ведёт в СПИСОК релизов, а не на
+              // последний: в нём нужного файла нет, и человек упрётся в ту же пустоту.
+              if (!файл) {
+                узел.href = 'https://github.com/' + РЕПО + '/releases';
+                const нет = узел.querySelector('.what');
+                if (нет) нет.textContent = нет.textContent + ' · в прошлом релизе';
+                return;
+              }
               узел.href = файл.browser_download_url;
               const что = узел.querySelector('.what');
               if (что && размер) что.textContent = что.textContent + ' · ' + размер(файл);
