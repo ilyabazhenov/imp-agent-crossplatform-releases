@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IMP Agent — агент для рабочих задач</title>
+    <meta
+      name="description"
+      content="Чат с моделью, файлы и шелл, git — и рядом Jira, Confluence, Bitbucket, Jenkins, TestOps и Kubernetes в одном окне. macOS и Windows."
+    />
+    <link rel="icon" href="icon.png" />
+    <meta property="og:title" content="IMP Agent" />
+    <meta
+      property="og:description"
+      content="Агент для рабочих задач: чат с моделью, файлы и шелл, git, а рядом — Jira, Confluence, Bitbucket, Jenkins, TestOps и Kubernetes в одном окне."
+    />
+    <meta
+      property="og:image"
+      content="https://ilyabazhenov.github.io/imp-agent-crossplatform-releases/shots/chat-light.webp"
+    />
+    <meta property="og:type" content="website" />
+    <style>
+      /* Палитра — та же, что в приложении: страница и окно должны читаться одним
+         продуктом. Тёмная половина объявлена медиазапросом, а не отдельным файлом. */
+      :root {
+        color-scheme: light;
+        --bg: #f4f6f8;
+        --bg-raised: #fff;
+        --bg-sunken: #eceff3;
+        --line: #d6d9df;
+        --line-soft: #e6e9ed;
+        --text: #1c1f26;
+        --muted: #5e636d;
+        --faint: #888c94;
+        --accent: #156cdd;
+        --agent: #6c4dd6;
+        --added: #00814f;
+        --warn: #9d6603;
+        --brand-ink: #221f35;
+        --brand-imp: #ff6a45;
+        --shadow: 0 24px 60px rgb(28 31 38 / 14%);
+        --shadow-soft: 0 2px 10px rgb(28 31 38 / 8%);
+        --radius: 14px;
+        --page: 1120px;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --bg: #1e1f22;
+          --bg-raised: #2c2e32;
+          --bg-sunken: #161719;
+          --line: #3c3f44;
+          --line-soft: #2f3236;
+          --text: #e2e5e9;
+          --muted: #9a9fa7;
+          --faint: #82878f;
+          --accent: #68a5ff;
+          --agent: #9b8afe;
+          --added: #43d58f;
+          --warn: #f5ae4b;
+          --shadow: 0 24px 60px rgb(0 0 0 / 50%);
+          --shadow-soft: 0 2px 10px rgb(0 0 0 / 35%);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        /* Модель печатает пути и имена классов, а точка и слэш переносом не считаются. */
+        overflow-wrap: anywhere;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      code,
+      kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.92em;
+      }
+
+      .wrap {
+        max-width: var(--page);
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* ── Шапка ───────────────────────────────────────────────────────────────────── */
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        backdrop-filter: blur(12px);
+        background: color-mix(in srgb, var(--bg) 82%, transparent);
+        border-bottom: 1px solid var(--line-soft);
+      }
+
+      .top .wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 60px;
+      }
+
+      .mark {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .mark img {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+      }
+
+      .top nav {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 15px;
+      }
+
+      .top nav a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      .top nav a:hover {
+        color: var(--text);
+      }
+
+      @media (max-width: 700px) {
+        .top nav .wide-only {
+          display: none;
+        }
+      }
+
+      /* ── Первый экран ────────────────────────────────────────────────────────────── */
+      .hero {
+        padding: 72px 0 8px;
+        text-align: center;
+      }
+
+      .hero .face {
+        border-radius: 22px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .hero .name {
+        margin: 16px 0 6px;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(32px, 6vw, 62px);
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+      }
+
+      .hero p.lead {
+        margin: 20px auto 0;
+        max-width: 660px;
+        font-size: clamp(18px, 2.2vw, 21px);
+        color: var(--muted);
+      }
+
+      .actions {
+        margin-top: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 22px;
+        border-radius: 11px;
+        border: 1px solid transparent;
+        font: inherit;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .btn.primary {
+        background: var(--brand-imp);
+        color: #fff;
+        box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-imp) 34%, transparent);
+      }
+
+      .btn.primary:hover {
+        background: color-mix(in srgb, var(--brand-imp) 88%, #000);
+      }
+
+      .btn.ghost {
+        border-color: var(--line);
+        color: var(--text);
+        background: var(--bg-raised);
+      }
+
+      .btn.ghost:hover {
+        border-color: var(--faint);
+      }
+
+      .under {
+        margin-top: 14px;
+        font-size: 14px;
+        color: var(--faint);
+      }
+
+      .under b {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      /* ── Кадры окна ──────────────────────────────────────────────────────────────── */
+      .shot {
+        margin: 48px auto 0;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        background: var(--bg-raised);
+        line-height: 0;
+      }
+
+      .shot img {
+        width: 100%;
+        height: auto;
+        display: block;
+        /* Пропорция кадра объявлена заранее: пока PNG не доехал, места он не занимает,
+           и страница прыгает на каждой картинке — вместе с якорями разделов. */
+        aspect-ratio: 2160 / 1320;
+      }
+
+      /* Кадр снят в обеих темах: показываем тот, в котором сидит читатель. */
+      .shot img.dark {
+        display: none;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .shot img.light {
+          display: none;
+        }
+
+        .shot img.dark {
+          display: block;
+        }
+      }
+
+      /* ── Полосы разделов ─────────────────────────────────────────────────────────── */
+      section {
+        padding: 96px 0 0;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(26px, 3.4vw, 34px);
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+
+      .kicker {
+        margin: 0 0 10px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-imp);
+      }
+
+      .say {
+        max-width: 720px;
+      }
+
+      .say p {
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .say p b {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* ── Плитка возможностей ─────────────────────────────────────────────────────── */
+      .tiles {
+        margin-top: 36px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+      }
+
+      .tile {
+        background: var(--bg-raised);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius);
+        padding: 22px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .tile h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+
+      .tile p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15.5px;
+      }
+
+      .tile .glyph {
+        display: block;
+        width: 26px;
+        height: 26px;
+        margin-bottom: 14px;
+        color: var(--accent);
+      }
+
+      /* ── Установка ───────────────────────────────────────────────────────────────── */
+      .halves {
+        margin-top: 36px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+      }
+
+      .card {
+        background: var(--bg-raised);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius);
+        padding: 24px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .card h3 {
+        margin: 0 0 12px;
+        font-size: 19px;
+      }
+
+      .card ol,
+      .card ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .card li + li {
+        margin-top: 8px;
+      }
+
+      pre {
+        margin: 14px 0 0;
+        padding: 12px 14px;
+        background: var(--bg-sunken);
+        border: 1px solid var(--line-soft);
+        border-radius: 10px;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text);
+      }
+
+      .files {
+        margin-top: 18px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .file {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        border: 1px solid var(--line-soft);
+        border-radius: 10px;
+        background: var(--bg-sunken);
+        text-decoration: none;
+        color: var(--text);
+        font-size: 15px;
+      }
+
+      .file:hover {
+        border-color: var(--accent);
+      }
+
+      .file span.what {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* ── Подвал ──────────────────────────────────────────────────────────────────── */
+      footer {
+        margin-top: 110px;
+        border-top: 1px solid var(--line-soft);
+        padding: 32px 0 56px;
+        color: var(--faint);
+        font-size: 14.5px;
+      }
+
+      footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 24px;
+        align-items: center;
+      }
+
+      footer a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        color: var(--text);
+      }
+
+      footer .spacer {
+        margin-left: auto;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <span class="mark"><img src="icon.png" alt="" /> IMP Agent</span>
+        <nav>
+          <a href="#chat" class="wide-only">Что он делает</a>
+          <a href="#install">Установка</a>
+          <a href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases"
+            >Все версии</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap hero">
+        <img class="face" src="icon.png" alt="" width="88" height="88" />
+        <p class="name">IMP Agent</p>
+        <h1>Разбирается в задаче, а не пересказывает её</h1>
+        <p class="lead">
+          Чат с моделью, файлы, шелл и git — а рядом Jira, Confluence, Bitbucket, Jenkins, TestOps и
+          Kubernetes. В одном окне, на macOS и Windows.
+        </p>
+        <div class="actions">
+          <a
+            class="btn primary"
+            id="download"
+            href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases/latest"
+            >Скачать</a
+          >
+          <a
+            class="btn ghost"
+            href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases/latest"
+            >Что нового</a
+          >
+        </div>
+        <p class="under">
+          <b id="version">Последняя версия</b> · macOS (Apple Silicon и Intel) и Windows · работает
+          по лицензии, привязанной к компьютеру
+        </p>
+      </div>
+
+      <div class="wrap">
+        <div class="shot">
+          <img
+            class="light"
+            src="shots/chat-light.webp"
+            alt="Окно IMP Agent: разбор упавшего теста в чате"
+          />
+          <img class="dark" src="shots/chat-dark.webp" alt="" />
+        </div>
+      </div>
+
+      <section id="chat">
+        <div class="wrap say">
+          <p class="kicker">Чат</p>
+          <h2>Читает код, историю и логи — и говорит, что нашёл</h2>
+          <p>
+            Агент сам открывает файлы рабочей папки, ищет по ним, смотрит историю git и запускает
+            команды. <b>Каждая правка и каждая незнакомая команда спрашивают разрешения</b> — с
+            диффом, который видно до того, как что-то изменится.
+          </p>
+        </div>
+        <div class="wrap">
+          <div class="tiles">
+            <div class="tile">
+              <svg
+                class="glyph"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                aria-hidden="true"
+              >
+                <path d="M4 6h16M4 12h10M4 18h13" stroke-linecap="round" />
+              </svg>
+              <h3>Видно каждый шаг</h3>
+              <p>
+                Ход мысли, вызовы инструментов и их ответы лежат в ленте по порядку: что агент
+                прочитал, что нашёл и почему решил именно так.
+              </p>
+            </div>
+            <div class="tile">
+              <svg
+                class="glyph"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                aria-hidden="true"
+              >
+                <path d="M12 3l7 4v6c0 4-3 6.5-7 8-4-1.5-7-4-7-8V7z" stroke-linejoin="round" />
+                <path d="M9.5 12l1.8 1.8L15 10" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <h3>Ничего мимо папки</h3>
+              <p>
+                Инструменты не выходят за границу рабочей папки, а запись в чужие системы —
+                комментарий, перезапуск сборки — каждый раз спрашивает вас.
+              </p>
+            </div>
+            <div class="tile">
+              <svg
+                class="glyph"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 17V7a1 1 0 011-1h4l2 2h8a1 1 0 011 1v8a1 1 0 01-1 1H5a1 1 0 01-1-1z"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <h3>Режим плана</h3>
+              <p>
+                Сложную работу агент сначала раскладывает планом с рисками — и берётся за неё,
+                только когда вы нажали «Выполнять».
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap say">
+          <p class="kicker">TestOps</p>
+          <h2>Красный прогон разбирается там же, где виден</h2>
+          <p>
+            Запуски, падения, сценарий по шагам, история результатов и дефекты — со всем этим можно
+            уйти в чат одной кнопкой: <b>«Разобрать в чате»</b> уносит туда прогон целиком, а не
+            ссылку на него.
+          </p>
+        </div>
+        <div class="wrap">
+          <div class="shot">
+            <img
+              class="light"
+              src="shots/testops-light.webp"
+              alt="Раздел TestOps: страница упавшего прогона"
+            />
+            <img
+              loading="lazy"
+              decoding="async"
+              class="dark"
+              src="shots/testops-dark.webp"
+              alt=""
+            />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap say">
+          <p class="kicker">Bitbucket</p>
+          <h2>Ревью с диффом и замечаниями</h2>
+          <p>
+            Пул-реквесты репозитория рабочей папки, состояние слияния, сборки по коммиту и ветки
+            обсуждений. На замечание можно ответить прямо отсюда, а можно
+            <b>попросить агента проверить, актуально ли оно</b> — он сам сходит в код.
+          </p>
+        </div>
+        <div class="wrap">
+          <div class="shot">
+            <img
+              class="light"
+              src="shots/bitbucket-light.webp"
+              alt="Раздел Bitbucket: пул-реквест с диффом и замечаниями"
+            />
+            <img
+              loading="lazy"
+              decoding="async"
+              class="dark"
+              src="shots/bitbucket-dark.webp"
+              alt=""
+            />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap say">
+          <p class="kicker">Kubernetes</p>
+          <h2>Выкаты, поды и логи — без переключения в браузер</h2>
+          <p>
+            Состояние выкатов по namespace, упавшие поды, события и хвост лога.
+            <b>Секреты и строки подключения закрыты отдельной галочкой</b> — агент не увидит их,
+            пока вы не разрешите.
+          </p>
+        </div>
+        <div class="wrap">
+          <div class="shot">
+            <img
+              class="light"
+              src="shots/kube-light.webp"
+              alt="Раздел «Кластер»: под в CrashLoopBackOff, события и лог"
+            />
+            <img loading="lazy" decoding="async" class="dark" src="shots/kube-dark.webp" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap say">
+          <p class="kicker">Jira и Confluence</p>
+          <h2>Задача целиком, а не её заголовок</h2>
+          <p>
+            Описание, комментарии, связи, вложения и история правок — в том же окне. Агент читает их
+            сам и умеет писать обратно: комментарий, смена статуса, заведение задачи —
+            <b>с показом полного текста перед отправкой</b>.
+          </p>
+        </div>
+        <div class="wrap">
+          <div class="shot">
+            <img
+              class="light"
+              src="shots/jira-light.webp"
+              alt="Раздел Jira: карточка задачи с описанием и комментариями"
+            />
+            <img loading="lazy" decoding="async" class="dark" src="shots/jira-dark.webp" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap say">
+          <p class="kicker">MCP</p>
+          <h2>Те же инструменты — вашему любимому редактору</h2>
+          <p>
+            Cursor, Claude Code и Codex могут ходить в Jira, Bitbucket, Jenkins, TestOps, Confluence
+            и кластер прямо из своего окна — теми же инструментами, какими пользуется агент здесь.
+            <b>Токены при этом остаются в приложении</b>: клиенту не надо ни знать их, ни
+            настраивать адреса.
+          </p>
+        </div>
+        <div class="wrap">
+          <div class="tiles">
+            <div class="tile">
+              <h3>По умолчанию выключено</h3>
+              <p>
+                Пока выключатель снят, наружу не открыто ничего. Сервисы выбираются галочками
+                поодиночке.
+              </p>
+            </div>
+            <div class="tile">
+              <h3>Запись — только с разрешения</h3>
+              <p>
+                Комментарий в задаче, перезапуск сборки, правка конфига — каждый раз вопрос в этом
+                окне, с именем клиента.
+              </p>
+            </div>
+            <div class="tile">
+              <h3>Видно, кто что просил</h3>
+              <p>
+                Журнал двери показывает клиента, вызов, длительность и ответ — вместе с телами
+                запроса и ответа.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap say">
+          <p class="kicker">Как устроено</p>
+          <h2>Ваша модель, ваш контур, ваш диск</h2>
+        </div>
+        <div class="wrap">
+          <div class="tiles">
+            <div class="tile">
+              <h3>Модель — на выбор</h3>
+              <p>
+                Любой OpenAI-совместимый шлюз по адресу и ключу — или уже стоящий у вас Claude Code
+                либо Codex, по подписке и без второго счёта.
+              </p>
+            </div>
+            <div class="tile">
+              <h3>Всё остаётся на машине</h3>
+              <p>
+                Беседы, вложения и журналы лежат на вашем диске, ключи — в системном хранилище.
+                Наружу уходит только то, что вы отправили модели.
+              </p>
+            </div>
+            <div class="tile">
+              <h3>Обновляется само</h3>
+              <p>
+                Приложение проверяет новые версии в фоне и ставит их одним нажатием — спросив
+                разрешения, а не молча.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="install">
+        <div class="wrap say">
+          <p class="kicker">Установка</p>
+          <h2>Скачать и поставить</h2>
+          <p>
+            Приложение проверяет новые версии само и предлагает поставить их одним нажатием.
+            Установка — это перезапуск: незавершённый ход оборвётся, беседы останутся на месте.
+          </p>
+        </div>
+        <div class="wrap">
+          <div class="halves">
+            <div class="card">
+              <h3>macOS</h3>
+              <ol>
+                <li>Скачайте архив под свой процессор и распакуйте двойным щелчком.</li>
+                <li>
+                  Перетащите <code>ImpAgent</code> в «Программы» — именно туда, иначе обновлению
+                  некуда будет записать новую версию.
+                </li>
+                <li>
+                  При первом запуске система скажет, что приложение повреждено. Это не так: она
+                  просто не берётся ручаться за незнакомого издателя. Один раз выполните в
+                  Терминале:
+                </li>
+              </ol>
+              <pre>xattr -dr com.apple.quarantine /Applications/ImpAgent.app</pre>
+              <div class="files" id="mac-files">
+                <a
+                  class="file"
+                  href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases/latest"
+                >
+                  IMP Agent для Apple Silicon <span class="what">M1 и новее</span>
+                </a>
+                <a
+                  class="file"
+                  href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases/latest"
+                >
+                  IMP Agent для Intel <span class="what">Mac до 2020 года</span>
+                </a>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Windows</h3>
+              <ol>
+                <li>Скачайте установщик и запустите его.</li>
+                <li>
+                  SmartScreen покажет синее окно «Windows защитила ваш компьютер» — нажмите
+                  «Подробнее», затем «Выполнить в любом случае». Установщик не подписан, и это
+                  ожидаемо.
+                </li>
+                <li>Права администратора не нужны.</li>
+              </ol>
+              <div class="files" id="win-files">
+                <a
+                  class="file"
+                  href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases/latest"
+                >
+                  IMP Agent Setup <span class="what">64-битная Windows</span>
+                </a>
+              </div>
+              <p style="margin: 18px 0 0; color: var(--muted); font-size: 15px">
+                Не каждая версия выходит для обеих систем. Если для Windows файла в последнем релизе
+                нет, возьмите его из предыдущего — обновление приедет со следующим.
+              </p>
+            </div>
+          </div>
+
+          <div class="halves">
+            <div class="card">
+              <h3>Лицензия</h3>
+              <p style="margin: 0; color: var(--muted); font-size: 16px">
+                После установки окно покажет код машины — пришлите его, и в ответ придёт строка
+                активации. Проверка идёт <b style="color: var(--text)">офлайн</b>: ни лицензионного
+                сервера, ни интернета для запуска не нужно. Лицензия действует включительно по
+                указанный день, продлить её можно заранее.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Доступы</h3>
+              <p style="margin: 0; color: var(--muted); font-size: 16px">
+                Ключ модели и токены сервисов хранятся зашифрованными средствами системы и в ленту
+                обратно не отдаются. Из журналов они вычищаются на всех уровнях подробности.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span>IMP Agent</span>
+        <a href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases"
+          >Все версии</a
+        >
+        <a href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases/latest"
+          >Примечания к последнему релизу</a
+        >
+        <span class="spacer">macOS и Windows · обновляется само</span>
+      </div>
+    </footer>
+
+    <script>
+      // Кнопка называет ФАЙЛ, а не «страницу релизов»: человек, пришедший скачать, не
+      // должен выбирать между четырьмя архивами, не зная, какой из них его.
+      (function () {
+        const РЕПО = 'ilyabazhenov/imp-agent-crossplatform-releases';
+        const кнопка = document.getElementById('download');
+        const версия = document.getElementById('version');
+
+        const система = (function () {
+          const данные = navigator.userAgentData;
+          const строка = navigator.userAgent;
+          const платформа = (данные && данные.platform) || navigator.platform || '';
+          if (/Win/i.test(платформа) || /Windows/i.test(строка)) return 'win';
+          if (/Mac/i.test(платформа) || /Mac OS X/i.test(строка)) {
+            // Apple Silicon не признаётся в user-agent: Safari и Chrome одинаково пишут
+            // «Intel Mac OS X». Отличаем по числу ядер — у M-серии их 8 и больше.
+            return (navigator.hardwareConcurrency || 0) >= 8 ? 'mac-arm' : 'mac-intel';
+          }
+          return 'other';
+        })();
+
+        const подпись = {
+          'mac-arm': 'Скачать для Mac (Apple Silicon)',
+          'mac-intel': 'Скачать для Mac (Intel)',
+          win: 'Скачать для Windows',
+          other: 'Скачать',
+        };
+        кнопка.textContent = подпись[система];
+
+        const ищем = {
+          'mac-arm': (имя) => /arm64-mac\.zip$/i.test(имя),
+          'mac-intel': (имя) => /-mac\.zip$/i.test(имя) && !/arm64/i.test(имя),
+          win: (имя) => /\.exe$/i.test(имя),
+          other: () => false,
+        };
+
+        fetch('https://api.github.com/repos/' + РЕПО + '/releases/latest', {
+          headers: { Accept: 'application/vnd.github+json' },
+        })
+          .then((ответ) => (ответ.ok ? ответ.json() : Promise.reject(ответ.status)))
+          .then((релиз) => {
+            const файлы = релиз.assets || [];
+            const найти = (правило) => файлы.find((файл) => правило(файл.name));
+            const мой = найти(ищем[система]);
+            if (мой) кнопка.href = мой.browser_download_url;
+            версия.textContent = 'Версия ' + String(релиз.tag_name || '').replace(/^v/, '');
+
+            const поставить = (узел, правило, размер) => {
+              const файл = найти(правило);
+              if (!файл || !узел) return;
+              узел.href = файл.browser_download_url;
+              const что = узел.querySelector('.what');
+              if (что && размер) что.textContent = что.textContent + ' · ' + размер(файл);
+            };
+            const мегабайты = (файл) => Math.round(файл.size / 1048576) + ' МБ';
+            const маки = document.querySelectorAll('#mac-files .file');
+            поставить(маки[0], ищем['mac-arm'], мегабайты);
+            поставить(маки[1], ищем['mac-intel'], мегабайты);
+            поставить(document.querySelector('#win-files .file'), ищем.win, мегабайты);
+          })
+          // Не достучались до GitHub — ссылки остаются на страницу последнего релиза,
+          // то есть кнопка работает и без этого запроса.
+          .catch(() => {
+            кнопка.href = 'https://github.com/' + РЕПО + '/releases/latest';
+          });
+      })();
+    </script>
+  </body>
+</html>
