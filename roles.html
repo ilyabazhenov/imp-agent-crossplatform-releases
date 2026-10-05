@@ -287,7 +287,172 @@
               </g>
             </svg>
           </div>
-          <p class="swipe-hint" aria-hidden="true">Схема шире экрана — листайте её вбок →</p>
+          <svg
+            class="map map-narrow"
+            id="map-narrow"
+            data-show="ab"
+            viewBox="0 0 300 1412"
+            role="img"
+            aria-label="Схема: человек в окне IMP Agent и внешние агенты через MCP приходят в одно ядро, которое ходит в рабочие сервисы. Модель для окна зовёт IMP, внешний агент зовёт свою модель сам"
+          >
+            <defs>
+              <marker
+                id="n-arr-a"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="7"
+                markerHeight="7"
+                orient="auto-start-reverse"
+              >
+                <path d="M0 0 L10 5 L0 10 z" class="dot-a" />
+              </marker>
+              <marker
+                id="n-arr-b"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="7"
+                markerHeight="7"
+                orient="auto-start-reverse"
+              >
+                <path d="M0 0 L10 5 L0 10 z" class="dot-b" />
+              </marker>
+            </defs>
+
+            <text class="t-cap" x="1" y="12">КТО ПРИХОДИТ</text>
+
+            <!-- Роль A: человек, и над ядром — модель, которую зовёт IMP -->
+            <g class="role-a">
+              <rect class="box" x="1" y="22" width="298" height="154" rx="12" />
+              <g class="dot-a" aria-hidden="true">
+                <circle cx="24" cy="40" r="6" />
+                <path d="M13 61 C13 49, 35 49, 35 61 Z" />
+              </g>
+              <text class="t-h" x="44" y="53">Человек в окне приложения</text>
+              <text class="t-s" x="16" y="78">Витрина под задачу — разделы:</text>
+              <rect class="sunk" x="16" y="88" width="58" height="24" rx="6" />
+              <text class="t-s" x="26" y="105">Jira</text>
+              <rect class="sunk" x="80" y="88" width="86" height="24" rx="6" />
+              <text class="t-s" x="90" y="105">Bitbucket</text>
+              <rect class="sunk" x="172" y="88" width="74" height="24" rx="6" />
+              <text class="t-s" x="182" y="105">TestOps</text>
+              <rect class="sunk" x="16" y="118" width="72" height="24" rx="6" />
+              <text class="t-s" x="26" y="135">Jenkins</text>
+              <rect class="sunk" x="94" y="118" width="78" height="24" rx="6" />
+              <text class="t-s" x="104" y="135">Кластер</text>
+              <rect class="sunk" x="178" y="118" width="94" height="24" rx="6" />
+              <text class="t-s" x="188" y="135">Confluence</text>
+              <text class="t-s" x="16" y="164">…и чат агента рядом с ними</text>
+
+              <rect class="llm" x="60" y="196" width="239" height="52" rx="12" />
+              <text class="t-cap" x="74" y="217">LLM</text>
+              <text class="t-h" x="106" y="218">Модель рабочего места</text>
+              <text class="t-m" x="74" y="239">шлюз · Claude / Codex CLI</text>
+            </g>
+
+            <!-- Ядро -->
+            <rect class="core" x="1" y="270" width="298" height="546" rx="14" />
+            <text class="t-cap" x="286" y="290" text-anchor="end">IMP AGENT</text>
+            <!-- стрелки роли A — поверх ядра: нарисованные раньше, они прячут под ним свои наконечники -->
+            <g class="role-a">
+              <path class="flow edge-a" d="M36 176 L 36 292" marker-end="url(#n-arr-a)" />
+              <path
+                class="flow edge-a"
+                d="M180 252 L 180 292"
+                marker-start="url(#n-arr-a)"
+                marker-end="url(#n-arr-a)"
+              />
+            </g>
+
+            <g class="role-a">
+              <rect class="port-a" x="12" y="298" width="276" height="74" rx="10" />
+              <text class="t-h" x="26" y="322">Витрины и чат</text>
+              <text class="t-s" x="26" y="343">списки, карточки, дифф, логи —</text>
+              <text class="t-s" x="26" y="361">и ход агента с подтверждением правок</text>
+            </g>
+
+            <rect class="box" x="12" y="382" width="276" height="318" rx="10" />
+            <text class="t-cap" x="26" y="404">ОБЩЕЕ ДЛЯ ОБЕИХ РОЛЕЙ</text>
+            <text class="t-h" x="26" y="430">101 инструмент</text>
+            <text class="t-s" x="26" y="450">wire снят с живых сервисов:</text>
+            <text class="t-s" x="26" y="467">пагинация, createmeta, свёртка</text>
+            <text class="t-s" x="26" y="484">падений, потолки выдачи</text>
+            <text class="t-h" x="26" y="512">Токены — только здесь</text>
+            <text class="t-s" x="26" y="532">safeStorage, клиенту их не видно</text>
+            <rect class="ask" x="26" y="548" width="248" height="96" rx="8" />
+            <text class="t-h" x="40" y="572">Подтверждение человека</text>
+            <text class="t-s" x="40" y="592">риск — по аргументам вызова</text>
+            <!-- запись от внешнего агента спрашивает человека в окне IMP Agent -->
+            <g class="role-b">
+              <text class="t-s ink-w" x="40" y="614">запись от Claude Code —</text>
+              <text class="t-s ink-w" x="40" y="631">вопрос в окне IMP Agent</text>
+            </g>
+            <text class="t-s" x="26" y="668">Корпоративные корни, исключения TLS,</text>
+            <text class="t-s" x="26" y="685">лимиты и трасса — тоже общие</text>
+
+            <g class="role-b">
+              <rect class="port-b" x="12" y="710" width="276" height="94" rx="10" />
+              <text class="t-h" x="26" y="734">Дверь MCP</text>
+              <text class="t-m" x="26" y="754">127.0.0.1 · токен</text>
+              <text class="t-s" x="26" y="773">выключена по умолчанию,</text>
+              <text class="t-s" x="26" y="791">сервисы — семьями, запись — галочкой</text>
+            </g>
+
+            <!-- выход к сервисам: шина под ядром, сервисы в две колонки -->
+            <path
+              class="fan edge-n"
+              d="M150 816 L 150 860 M63 860 L 195 860 M63 860 L 63 874 M195 860 L 195 874"
+            />
+            <text class="t-cap" x="1" y="848">РАБОЧИЕ СЕРВИСЫ</text>
+            <rect class="svc" x="1" y="874" width="124" height="34" rx="9" />
+            <text class="t-svc" x="63" y="896" text-anchor="middle">Jira</text>
+            <rect class="svc" x="133" y="874" width="124" height="34" rx="9" />
+            <text class="t-svc" x="195" y="896" text-anchor="middle">Confluence</text>
+            <rect class="svc" x="1" y="916" width="124" height="34" rx="9" />
+            <text class="t-svc" x="63" y="938" text-anchor="middle">Bitbucket</text>
+            <rect class="svc" x="133" y="916" width="124" height="34" rx="9" />
+            <text class="t-svc" x="195" y="938" text-anchor="middle">Jenkins</text>
+            <rect class="svc" x="1" y="958" width="124" height="34" rx="9" />
+            <text class="t-svc" x="63" y="980" text-anchor="middle">TestOps</text>
+            <rect class="svc" x="133" y="958" width="124" height="34" rx="9" />
+            <text class="t-svc" x="195" y="980" text-anchor="middle">Kubernetes</text>
+            <rect class="svc" x="1" y="1000" width="124" height="34" rx="9" />
+            <text class="t-svc" x="63" y="1022" text-anchor="middle">MSSQL</text>
+            <text class="t-m" x="133" y="1022">+ web · HTTP-цели</text>
+
+            <!-- Роль B: внешний агент снизу, со своей моделью; в ядро — по правой дорожке -->
+            <g class="role-b">
+              <path class="flow edge-b" d="M282 1072 L 282 822" marker-end="url(#n-arr-b)" />
+            </g>
+            <g class="role-b" transform="translate(0 42)">
+              <rect class="box" x="1" y="1030" width="298" height="178" rx="12" />
+              <g class="dot-b" aria-hidden="true">
+                <circle cx="24" cy="1048" r="6" />
+                <path d="M13 1069 C13 1057, 35 1057, 35 1069 Z" />
+              </g>
+              <text class="t-h" x="44" y="1061">Разработчик в своём агенте</text>
+              <text class="t-s" x="16" y="1086">Claude Code · Codex · Cursor</text>
+              <text class="t-s" x="16" y="1104">со своей моделью, в своём проекте</text>
+              <rect class="sunk" x="16" y="1116" width="268" height="56" rx="8" />
+              <text class="t-m" x="28" y="1138">› почему упала shop-api #412?</text>
+              <text class="t-m" x="28" y="1160">jenkins_tests · impagent</text>
+              <text class="t-m" x="16" y="1194">приложение открывать не нужно</text>
+
+              <path
+                class="flow edge-b"
+                d="M150 1212 L 150 1258"
+                marker-start="url(#n-arr-b)"
+                marker-end="url(#n-arr-b)"
+              />
+              <rect class="llm" x="1" y="1262" width="298" height="56" rx="12" />
+              <text class="t-cap" x="16" y="1284">LLM</text>
+              <text class="t-h" x="50" y="1285">модель клиента</text>
+              <text class="t-m" x="16" y="1306">Claude · GPT — выбор клиента</text>
+              <text class="t-s" x="1" y="1340">IMP модель не зовёт и её разговор</text>
+              <text class="t-s" x="1" y="1357">не видит — только исполняет вызовы.</text>
+            </g>
+          </svg>
           <p class="legend" id="legend">
             Оба входа ведут в одно ядро. Отличается только то, кто держит модель и где сидит
             человек.

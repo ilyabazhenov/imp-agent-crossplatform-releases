@@ -335,21 +335,29 @@ svg.map {
   opacity: 0.14;
 }
 
-/* Схема на узком экране шире своей коробки и листается вбок, а полосу прокрутки iOS
-   не показывает вовсе: без подсказки видна левая треть, и она выглядит всей схемой.
-   Класс `overflows` ставит скрипт по настоящему переполнению, а не по ширине окна. */
-.swipe-hint {
+/* Широкая схема держит 720 точек и на телефоне видна левой третью, а листать её
+   вбок никто не догадается: полосы прокрутки iOS не показывает. Поэтому ниже 800 точек
+   (720 схемы плюс поля страницы и коробки) стоит своя, вертикальная — та же история
+   сверху вниз. `svg.map.map-narrow` сильнее `svg.map`, а не позже его в файле. */
+svg.map.map-narrow {
   display: none;
-  margin: 0;
+  min-width: 0;
+  max-width: 380px;
+  margin: 0 auto;
+}
+@media (max-width: 799px) {
+  .scroll {
+    display: none;
+  }
+  svg.map.map-narrow {
+    display: block;
+  }
+}
+.map .t-svc {
   font-size: 13px;
-  color: var(--faint);
+  font-weight: 600;
 }
-.stage.overflows .swipe-hint {
-  display: block;
-}
-.stage.overflows:not(.at-end) .scroll {
-  mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
-}
+
 .legend {
   margin: 0;
   font-size: 13px;
