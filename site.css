@@ -1,0 +1,454 @@
+/* Палитра — та же, что в приложении: страница и окно должны читаться одним
+   продуктом. Тёмная половина объявлена медиазапросом, а не отдельным файлом. */
+:root {
+  color-scheme: light;
+  --bg: #f4f6f8;
+  --bg-raised: #fff;
+  --bg-sunken: #eceff3;
+  --line: #d6d9df;
+  --line-soft: #e6e9ed;
+  --text: #1c1f26;
+  --muted: #5e636d;
+  --faint: #888c94;
+  --accent: #156cdd;
+  --agent: #6c4dd6;
+  --added: #00814f;
+  --warn: #9d6603;
+  --brand-ink: #221f35;
+  --brand-imp: #ff6a45;
+  --shadow: 0 24px 60px rgb(28 31 38 / 14%);
+  --shadow-soft: 0 2px 10px rgb(28 31 38 / 8%);
+  --radius: 14px;
+  --page: 1120px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #1e1f22;
+    --bg-raised: #2c2e32;
+    --bg-sunken: #161719;
+    --line: #3c3f44;
+    --line-soft: #2f3236;
+    --text: #e2e5e9;
+    --muted: #9a9fa7;
+    --faint: #82878f;
+    --accent: #68a5ff;
+    --agent: #9b8afe;
+    --added: #43d58f;
+    --warn: #f5ae4b;
+    --shadow: 0 24px 60px rgb(0 0 0 / 50%);
+    --shadow-soft: 0 2px 10px rgb(0 0 0 / 35%);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  /* Модель печатает пути и имена классов, а точка и слэш переносом не считаются. */
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--accent);
+}
+
+code,
+kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.wrap {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Шапка ───────────────────────────────────────────────────────────────────── */
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.top .wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.mark img {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+}
+
+.top nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 15px;
+}
+
+.top nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.top nav a:hover {
+  color: var(--text);
+}
+
+@media (max-width: 700px) {
+  .top nav .wide-only {
+    display: none;
+  }
+}
+
+/* ── Первый экран ────────────────────────────────────────────────────────────── */
+.hero {
+  padding: 72px 0 8px;
+  text-align: center;
+}
+
+.hero .face {
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+}
+
+.hero .name {
+  margin: 16px 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(32px, 6vw, 62px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.hero p.lead {
+  margin: 20px auto 0;
+  max-width: 660px;
+  font-size: clamp(18px, 2.2vw, 21px);
+  color: var(--muted);
+}
+
+.actions {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 22px;
+  border-radius: 11px;
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: var(--brand-imp);
+  color: #fff;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-imp) 34%, transparent);
+}
+
+.btn.primary:hover {
+  background: color-mix(in srgb, var(--brand-imp) 88%, #000);
+}
+
+.btn.ghost {
+  border-color: var(--line);
+  color: var(--text);
+  background: var(--bg-raised);
+}
+
+.btn.ghost:hover {
+  border-color: var(--faint);
+}
+
+.under {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--faint);
+}
+
+.under b {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* Вторая строка под кнопками — оговорка к первой, а не новый абзац. */
+.under + .under {
+  margin-top: 4px;
+}
+
+/* ── Кадры окна ──────────────────────────────────────────────────────────────── */
+.shot {
+  margin: 48px auto 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: var(--bg-raised);
+  line-height: 0;
+}
+
+.shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* Пропорция кадра объявлена заранее: пока PNG не доехал, места он не занимает,
+     и страница прыгает на каждой картинке — вместе с якорями разделов. */
+  aspect-ratio: 2160 / 1320;
+}
+
+/* Кадр снят в обеих темах: показываем тот, в котором сидит читатель. */
+.shot img.dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .shot img.light {
+    display: none;
+  }
+
+  .shot img.dark {
+    display: block;
+  }
+}
+
+/* ── Полосы разделов ─────────────────────────────────────────────────────────── */
+section {
+  padding: 96px 0 0;
+}
+
+h2 {
+  margin: 0;
+  font-size: clamp(26px, 3.4vw, 34px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.kicker {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-imp);
+}
+
+.say {
+  max-width: 720px;
+}
+
+.say p {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.say p b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ── Плитка возможностей ─────────────────────────────────────────────────────── */
+.tiles {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.tile {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow-soft);
+}
+
+.tile h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.tile p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+
+.tile .glyph {
+  display: block;
+  width: 26px;
+  height: 26px;
+  margin-bottom: 14px;
+  color: var(--accent);
+}
+
+/* ── Установка ───────────────────────────────────────────────────────────────── */
+.halves {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+.card h3 {
+  margin: 0 0 12px;
+  font-size: 19px;
+}
+
+.card ol,
+.card ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.card li + li {
+  margin-top: 8px;
+}
+
+pre {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.files {
+  margin-top: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.file {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: var(--bg-sunken);
+  text-decoration: none;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.file:hover {
+  border-color: var(--accent);
+}
+
+.file span.what {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.card p.plain {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.card p.plain b {
+  color: var(--text);
+}
+
+.card p.note {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* ── Подвал ──────────────────────────────────────────────────────────────────── */
+footer {
+  margin-top: 110px;
+  border-top: 1px solid var(--line-soft);
+  padding: 32px 0 56px;
+  color: var(--faint);
+  font-size: 14.5px;
+}
+
+footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: center;
+}
+
+footer a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--text);
+}
+
+footer .spacer {
+  margin-left: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

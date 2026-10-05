@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="icon.png" />
+    <link
+      rel="alternate"
+      hreflang="ru"
+      href="https://ilyabazhenov.github.io/imp-agent-crossplatform-releases/roles.html"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://ilyabazhenov.github.io/imp-agent-crossplatform-releases/en/roles.html"
+    />
+    <title>Две роли IMP Agent</title>
+    <link rel="stylesheet" href="roles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="wrap intro">
+        <p class="kicker crumbs">
+          <a class="back" href="index.html">← IMP Agent</a>
+          <a class="back" href="en/roles.html" lang="en" hreflang="en">English</a>
+        </p>
+        <h1>
+          Одно приложение — <span class="a">рабочее место</span> и
+          <span class="b">дверь для чужих агентов</span>
+        </h1>
+        <p class="lead">
+          Внутри лежит одно и то же: токены сервисов, 101 инструмент и знание о том, как на самом
+          деле отвечают Jira, Bitbucket, Jenkins и TestOps. Войти к нему можно двумя путями — через
+          своё окно или через MCP из Claude Code, Codex и Cursor.
+        </p>
+      </div>
+
+      <div class="wrap">
+        <div class="stage">
+          <div class="switch" role="group" aria-label="Какую роль показать">
+            <button
+              type="button"
+              id="show-ab"
+              data-show="ab"
+              data-legend="Оба входа ведут в одно ядро. Отличается только то, кто держит модель и где сидит человек."
+              aria-pressed="true"
+            >
+              <span class="sw ab"></span>Обе роли
+            </button>
+            <button
+              type="button"
+              id="show-a"
+              data-show="a"
+              data-legend="Рабочее место: человек смотрит на разделы и говорит с агентом в том же окне. Модель — своя."
+              aria-pressed="false"
+            >
+              <span class="sw a"></span>Рабочее место
+            </button>
+            <button
+              type="button"
+              id="show-b"
+              data-show="b"
+              data-legend="Дверь MCP: Claude Code, Codex или Cursor зовут наши инструменты. Модель — их, токены и подтверждение — наши."
+              aria-pressed="false"
+            >
+              <span class="sw b"></span>Дверь MCP
+            </button>
+          </div>
+
+          <div class="scroll">
+            <svg
+              class="map"
+              id="map"
+              data-show="ab"
+              viewBox="0 0 1080 700"
+              role="img"
+              aria-label="Схема: человек в окне IMP Agent и внешние агенты через MCP приходят в одно ядро, которое ходит в рабочие сервисы. Модель для окна зовёт IMP, внешний агент зовёт свою модель сам"
+            >
+              <defs>
+                <marker
+                  id="arr-a"
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="7"
+                  markerHeight="7"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0 L10 5 L0 10 z" class="dot-a" />
+                </marker>
+                <marker
+                  id="arr-b"
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="7"
+                  markerHeight="7"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0 L10 5 L0 10 z" class="dot-b" />
+                </marker>
+                <marker
+                  id="arr-w"
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="7"
+                  markerHeight="7"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0 L10 5 L0 10 z" class="ink-w" />
+                </marker>
+              </defs>
+
+              <!-- Модели: у окна её зовёт IMP, у внешнего агента — он сам -->
+              <g class="role-a">
+                <rect class="llm" x="452" y="10" width="280" height="58" rx="12" />
+                <text class="t-cap" x="470" y="32">LLM</text>
+                <text class="t-h" x="506" y="33">модель рабочего места</text>
+                <text class="t-m" x="470" y="55">шлюз компании · Claude CLI · Codex CLI</text>
+                <path
+                  class="flow edge-a"
+                  d="M592 138 L 592 72"
+                  marker-start="url(#arr-a)"
+                  marker-end="url(#arr-a)"
+                />
+                <text class="t-s" x="604" y="108">промт, схемы, ответы инструментов</text>
+              </g>
+              <g class="role-b">
+                <rect class="llm" x="20" y="622" width="290" height="58" rx="12" />
+                <text class="t-cap" x="38" y="644">LLM</text>
+                <text class="t-h" x="74" y="645">модель клиента</text>
+                <text class="t-m" x="38" y="667">Claude · GPT — выбор клиента</text>
+                <path
+                  class="flow edge-b"
+                  d="M165 572 L 165 618"
+                  marker-start="url(#arr-b)"
+                  marker-end="url(#arr-b)"
+                />
+                <text class="t-s" x="330" y="646">
+                  IMP модель не зовёт и её разговор не видит —
+                </text>
+                <text class="t-s" x="330" y="663">только исполняет вызовы инструментов</text>
+              </g>
+
+              <g transform="translate(0 80)">
+                <!-- колонки -->
+                <text class="t-cap" x="20" y="24">КТО ПРИХОДИТ</text>
+                <text class="t-cap" x="390" y="24">IMP AGENT</text>
+                <text class="t-cap" x="860" y="24">РАБОЧИЕ СЕРВИСЫ</text>
+
+                <!-- Роль A: человек -->
+                <g class="role-a">
+                  <rect class="box" x="20" y="44" width="290" height="190" rx="12" />
+                  <g class="dot-a" aria-hidden="true">
+                    <circle cx="44" cy="62" r="6" />
+                    <path d="M33 83 C33 71, 55 71, 55 83 Z" />
+                  </g>
+                  <text class="t-h" x="64" y="75">Человек в окне приложения</text>
+                  <text class="t-s" x="36" y="100">Витрина под задачу — разделы:</text>
+                  <g>
+                    <rect class="sunk" x="36" y="110" width="58" height="24" rx="6" />
+                    <text class="t-s" x="46" y="127">Jira</text>
+                    <rect class="sunk" x="100" y="110" width="86" height="24" rx="6" />
+                    <text class="t-s" x="110" y="127">Bitbucket</text>
+                    <rect class="sunk" x="192" y="110" width="74" height="24" rx="6" />
+                    <text class="t-s" x="202" y="127">TestOps</text>
+                    <rect class="sunk" x="36" y="140" width="72" height="24" rx="6" />
+                    <text class="t-s" x="46" y="157">Jenkins</text>
+                    <rect class="sunk" x="114" y="140" width="78" height="24" rx="6" />
+                    <text class="t-s" x="124" y="157">Кластер</text>
+                    <rect class="sunk" x="198" y="140" width="94" height="24" rx="6" />
+                    <text class="t-s" x="208" y="157">Confluence</text>
+                  </g>
+                  <text class="t-s" x="36" y="190">…и чат агента рядом с ними</text>
+                  <text class="t-m" x="36" y="214">модель: шлюз · Claude CLI · Codex CLI</text>
+
+                  <path
+                    class="flow edge-a"
+                    d="M310 139 C 350 139, 350 110, 392 110"
+                    marker-end="url(#arr-a)"
+                  />
+                </g>
+
+                <!-- Роль B: внешние агенты -->
+                <g class="role-b">
+                  <rect class="box" x="20" y="300" width="290" height="190" rx="12" />
+                  <g class="dot-b" aria-hidden="true">
+                    <circle cx="44" cy="318" r="6" />
+                    <path d="M33 339 C33 327, 55 327, 55 339 Z" />
+                  </g>
+                  <text class="t-h" x="64" y="331">Разработчик в своём агенте</text>
+                  <text class="t-s" x="36" y="356">Claude Code · Codex · Cursor</text>
+                  <text class="t-s" x="36" y="378">со своей моделью, в своём проекте</text>
+                  <rect class="sunk" x="36" y="394" width="258" height="56" rx="8" />
+                  <text class="t-m" x="48" y="416">› почему упала shop-api #412?</text>
+                  <text class="t-m" x="48" y="438">jenkins_tests · impagent</text>
+                  <text class="t-m" x="36" y="474">приложение открывать не нужно</text>
+
+                  <path
+                    class="flow edge-b"
+                    d="M310 395 C 350 395, 350 426, 392 426"
+                    marker-end="url(#arr-b)"
+                  />
+                </g>
+
+                <!-- Ядро -->
+                <rect class="core" x="392" y="44" width="400" height="446" rx="14" />
+
+                <g class="role-a">
+                  <rect class="port-a" x="408" y="60" width="368" height="72" rx="10" />
+                  <text class="t-h" x="424" y="86">Витрины и чат</text>
+                  <text class="t-s" x="424" y="108">
+                    списки, карточки, дифф, логи — и ход агента
+                  </text>
+                  <text class="t-s" x="424" y="124">с подтверждением каждой правки</text>
+                </g>
+
+                <g class="role-b">
+                  <rect class="port-b" x="408" y="396" width="368" height="78" rx="10" />
+                  <text class="t-h" x="424" y="422">Дверь MCP</text>
+                  <text class="t-m" x="424" y="442">
+                    127.0.0.1 · токен · выключена по умолчанию
+                  </text>
+                  <text class="t-s" x="424" y="462">
+                    сервисы открываются семьями, запись — галочкой
+                  </text>
+                </g>
+
+                <!-- общее -->
+                <rect class="box" x="408" y="148" width="368" height="232" rx="10" />
+                <text class="t-cap" x="424" y="172">ОБЩЕЕ ДЛЯ ОБЕИХ РОЛЕЙ</text>
+                <text class="t-h" x="424" y="198">101 инструмент</text>
+                <text class="t-s" x="424" y="218">
+                  wire снят с живых сервисов: пагинация, createmeta,
+                </text>
+                <text class="t-s" x="424" y="235">свёртка падений, потолки выдачи</text>
+                <text class="t-h" x="424" y="266">Токены — только здесь</text>
+                <text class="t-s" x="424" y="286">safeStorage, клиенту их не видно вовсе</text>
+                <rect class="ask" x="424" y="304" width="336" height="60" rx="8" />
+                <text class="t-h" x="438" y="328">Подтверждение человека</text>
+                <text class="t-s" x="438" y="348">риск считается по аргументам вызова</text>
+
+                <!-- вопрос уходит в окно человека даже для внешнего агента -->
+                <g class="role-b">
+                  <path
+                    class="flow edge-w"
+                    d="M424 334 C 360 334, 350 250, 250 236"
+                    marker-end="url(#arr-w)"
+                  />
+                  <text class="t-s ink-w" x="236" y="266" text-anchor="end">
+                    запись от Claude Code —
+                  </text>
+                  <text class="t-s ink-w" x="236" y="283" text-anchor="end">
+                    вопрос в окне IMP Agent
+                  </text>
+                </g>
+
+                <!-- выход к сервисам -->
+                <path class="fan edge-n" d="M792 267 L 836 267" />
+                <g>
+                  <path class="fan edge-n" d="M836 67 L 836 471" />
+                  <rect class="svc" x="860" y="48" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="72">Jira</text>
+                  <rect class="svc" x="860" y="108" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="132">Confluence</text>
+                  <rect class="svc" x="860" y="168" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="192">Bitbucket</text>
+                  <rect class="svc" x="860" y="228" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="252">Jenkins</text>
+                  <rect class="svc" x="860" y="288" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="312">TestOps</text>
+                  <rect class="svc" x="860" y="348" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="372">Kubernetes</text>
+                  <rect class="svc" x="860" y="408" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="432">MSSQL</text>
+                  <path
+                    class="fan edge-n"
+                    d="M836 67 H860 M836 127 H860 M836 187 H860 M836 247 H860 M836 307 H860 M836 367 H860 M836 427 H860"
+                  />
+                  <text class="t-m" x="860" y="480">+ web · HTTP-цели</text>
+                </g>
+
+                <text class="t-s" x="592" y="522" text-anchor="middle">
+                  Корпоративные корни, исключения TLS, лимиты и трасса — тоже общие
+                </text>
+              </g>
+            </svg>
+          </div>
+          <p class="legend" id="legend">
+            Оба входа ведут в одно ядро. Отличается только то, кто держит модель и где сидит
+            человек.
+          </p>
+        </div>
+      </div>
+
+      <div class="wrap roles">
+        <article class="role a" id="role-a">
+          <span class="tag">Роль 1 · рабочее место</span>
+          <h2>Витрина под задачу, а не общий чат над файлами</h2>
+          <p>
+            Для того, кто работает в окне IMP Agent. Каждый сервис — свой раздел: красный прогон
+            TestOps, ревью с диффом и замечаниями, поды и логи кластера. Агент живёт рядом и берёт в
+            работу то, на что показали пальцем.
+          </p>
+          <div class="shot">
+            <img
+              class="light"
+              src="shots/testops-light.webp"
+              alt="Раздел TestOps в окне IMP Agent: упавшие тесты прогона"
+            />
+            <img class="dark" src="shots/testops-dark.webp" alt="" />
+          </div>
+          <ol class="steps">
+            <li>Открыли прогон в TestOps — падения уже свёрнуты по причинам.</li>
+            <li>«Разобрать в чате» — агенту уходит письмо с прогоном, сборкой и веткой.</li>
+            <li>Агент читает лог Jenkins, код и историю git, предлагает правку.</li>
+            <li>Правка и комментарий в Jira — только после «Разрешить» в этом же окне.</li>
+          </ol>
+          <dl class="facts">
+            <dt>Модель</dt>
+            <dd>своя: шлюз компании или подписка через Claude / Codex CLI</dd>
+            <dt>Кто видит</dt>
+            <dd>человек за этим окном</dd>
+            <dt>Чем сильна</dt>
+            <dd>Claude Code, Cursor и Codex такой витрины не имеют</dd>
+          </dl>
+        </article>
+
+        <article class="role b" id="role-b">
+          <span class="tag">Роль 2 · дверь MCP</span>
+          <h2>Рабочие сервисы — в любимом агенте, без единого токена в его конфиге</h2>
+          <p>
+            Для того, кто живёт в Claude Code, Codex или Cursor. Приложение поднимает MCP-сервер на
+            петле, и чужой агент получает те же инструменты. Окно IMP Agent можно даже не открывать
+            — достаточно, чтобы приложение было запущено.
+          </p>
+          <pre class="term"><span class="u">› почему упала ночная shop-api #412?</span>
+
+<span class="c">● impagent · jenkins_tests</span>  job=shop-api build=412
+  <span class="r">⎿</span> 3 падения · 1 причина: Connection refused :5432
+     тест красный с #409 — между #408 и #409 ревизия менялась
+
+<span class="c">● impagent · jira_comment</span>  key=SHOP-1289
+  <span class="w">⎿ ждёт подтверждения в окне IMP Agent…</span></pre>
+          <ol class="steps">
+            <li>
+              Включили дверь в настройках — выпускается токен, адрес ложится в
+              <code>mcp.json</code>.
+            </li>
+            <li>Клиент подключается и получает правила команды: проекты Jira, стенды, адреса.</li>
+            <li>Чтение идёт сразу; запись поднимает диалог в окне IMP Agent с именем клиента.</li>
+            <li>Каждый вызов виден в «Отладке»: клиент, аргументы, длительность, ответ.</li>
+          </ol>
+          <dl class="facts">
+            <dt>Модель</dt>
+            <dd>чужая — та, что у клиента</dd>
+            <dt>Кто видит</dt>
+            <dd>разработчик в своём редакторе или терминале</dd>
+            <dt>Чем сильна</dt>
+            <dd>ценность есть даже у того, кто наш чат не открывает</dd>
+          </dl>
+        </article>
+      </div>
+
+      <section class="wrap catalog" id="catalog" data-show="ab">
+        <p class="kicker">Каталог команды</p>
+        <h2>Как работает команда — в одном репозитории, и доезжает в обе роли</h2>
+        <p class="intro-text">
+          Раньше правила («как называем PR», «куда заводим баги», «что значат наши джобы») жили в
+          настройках одного человека и были привязаны к пути на его диске. Теперь их кладут в общий
+          репозиторий Bitbucket, и каждый IMP в команде читает его сам. Меняют правила
+          пул-реквестом, как код.
+        </p>
+
+        <ol class="timeline" aria-label="Как правка доезжает до команды">
+          <li>
+            <span class="when">пул-реквест</span><b>Правка в каталоге</b>новый пресет или строка в
+            правилах
+          </li>
+          <li>
+            <span class="when">ревью · merge</span><b>Команда согласилась</b>правило влито в ветку
+            каталога
+          </li>
+          <li>
+            <span class="when">≤ 30 минут</span><b>Каждый IMP сверил коммит</b>файлы перечитываются
+            только после нового коммита
+          </li>
+          <li>
+            <span class="when">сразу</span><b>Работает у всех</b>в своём окне и у их Claude Code,
+            Codex, Cursor
+          </li>
+        </ol>
+
+        <div class="matrix" role="table" aria-label="Что лежит в каталоге и куда доезжает">
+          <div class="mh f" role="columnheader">В репозитории</div>
+          <div class="mh a col-a" role="columnheader">Рабочее место</div>
+          <div class="mh b col-b" role="columnheader">Дверь MCP</div>
+
+          <div class="folder" role="rowheader">
+            <code>presets/</code><span>подход к задаче: «ревью по нашему чек-листу»</span>
+          </div>
+          <div class="cell-a col-a" role="cell">
+            <b>Пресет в поповере</b>группой «Общие · Команда» — выбирается на беседу, дописывается
+            после базового наказа
+          </div>
+          <div class="cell-b col-b" role="cell">
+            <span class="none"
+              >Пока не едет. Пресет выбирают на беседу, а у двери бесед нет:
+              <code>instructions</code> одни на всё подключение, и в них пресет стал бы обязательным
+              для каждого чата клиента</span
+            >
+          </div>
+
+          <div class="folder" role="rowheader">
+            <code>rules/</code><span>как команда работает с сервисами — по файлу на проект</span>
+          </div>
+          <div class="cell-a col-a" role="cell">
+            <b>Правила в наказе агента</b>к папке привязываются по репозиторию из origin, а не по
+            пути на диске: у каждого проект лежит там, где лежит
+          </div>
+          <div class="cell-b col-b" role="cell">
+            <b>Instructions при подключении</b>Claude Code и Codex кладут их в системный промт —
+            переживают <code>/clear</code>. Поменялись правила — Claude Code и Codex переподключатся
+            и получат новые
+          </div>
+
+          <div class="folder" role="rowheader">
+            <code>handoff/</code><span>что у команды значит «разобрать это»</span>
+          </div>
+          <div class="cell-a col-a" role="cell">
+            <b>Дописка к «Разобрать в чате»</b>письмо кнопки в разделах Bitbucket, Jira, Jenkins,
+            TestOps и Кластера уходит агенту вместе с ней
+          </div>
+          <div class="cell-b col-b" role="cell">
+            <b>Слэш-команды</b
+            ><span class="cmd">/mcp__impagent__review_pr pr=&lt;ссылка&gt;</span>то же письмо, что у
+            кнопки, с той же допиской — семь команд, ссылка прямо из браузера
+          </div>
+        </div>
+
+        <div class="files">
+          <div class="file">
+            <span class="name">rules/shop-api.md</span>
+            <pre class="term"><span class="u">---</span>
+<span class="k">repos:</span> SHOP/shop-api, SHOP/shop-web
+<span class="k">jira_projects:</span> SHOP
+<span class="k">watched_jobs:</span> |
+  shop-api-nightly   # полный регресс раз в сутки
+  shop-api-deploy    # сборка и выкат на stage
+<span class="u">---</span>
+
+<span class="u">## Bitbucket</span>
+Название PR: &lt;релиз&gt; | &lt;ключ задачи&gt; | &lt;название&gt;.
+Ревьюеры добавятся сами.
+
+<span class="u">## Kubernetes</span>
+shop-stage-* — тестовые стенды, прод — только shop-prod.</pre>
+          </div>
+          <div class="aside">
+            <h3>Своё — дописка, а не замена</h3>
+            <p>
+              Правило команды стоит в настройках коробкой над своим полем, с источником «каталог ·
+              файл · коммит». Своё дописывается после него и командное не перекрывает.
+            </p>
+            <h3>Связанные папки — свежими сами</h3>
+            <p>
+              Автотесты и документация рядом с проектом больше не читаются снимком последнего
+              ручного <code>git pull</code>: у клона в таблице связанных папок есть галочка
+              «Синхронизация» и расписание. Пока агент работает, папку не трогают.
+            </p>
+            <h3>Что в каталог не едет</h3>
+            <p>Пути на диске и окружение команд — это знание о запуске одного человека.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="wrap shared">
+        <p class="kicker">Почему это одно приложение, а не два</p>
+        <h2>Обе роли держатся на одном и том же</h2>
+        <p>
+          Отдельный MCP-сервер пришлось бы снабжать всем, что у приложения уже есть, — и он всё
+          равно не знал бы, как отвечают эти сервисы на самом деле.
+        </p>
+        <div class="grid4">
+          <div class="cell">
+            <h3>Секреты</h3>
+            <p>
+              Токены в системном хранилище. Их не копируют ни в конфиг клиента, ни в переменные
+              окружения.
+            </p>
+          </div>
+          <div class="cell">
+            <h3>Знание о сервисах</h3>
+            <p>
+              Пагинация Bitbucket, <code>createmeta</code> Jira, имена стадий Jenkins, свёртка
+              падений TestOps.
+            </p>
+          </div>
+          <div class="cell">
+            <h3>Человек в петле</h3>
+            <p>
+              Класс риска по аргументам, диалог с диффом, «разрешить всегда» — одно правило на оба
+              входа.
+            </p>
+          </div>
+          <div class="cell">
+            <h3>Сеть компании</h3>
+            <p>Корпоративные корни, доверие отпечатку, лимиты по хосту, трасса каждого запроса.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="roles.js"></script>
+  </body>
+</html>

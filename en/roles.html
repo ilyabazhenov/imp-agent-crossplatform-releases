@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../icon.png" />
+    <link
+      rel="alternate"
+      hreflang="ru"
+      href="https://ilyabazhenov.github.io/imp-agent-crossplatform-releases/roles.html"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://ilyabazhenov.github.io/imp-agent-crossplatform-releases/en/roles.html"
+    />
+    <title>IMP Agent: two roles</title>
+    <link rel="stylesheet" href="../roles.css" />
+  </head>
+  <body>
+    <main>
+      <div class="wrap intro">
+        <p class="kicker crumbs">
+          <a class="back" href="index.html">← IMP Agent</a>
+          <a class="back" href="../roles.html" lang="ru" hreflang="ru">Русский</a>
+        </p>
+        <h1>
+          One app — a <span class="a">workspace</span> and a
+          <span class="b">door for other agents</span>
+        </h1>
+        <p class="lead">
+          Inside is one and the same thing: service tokens, 101 tools and the knowledge of how Jira,
+          Bitbucket, Jenkins and TestOps actually respond. There are two ways in — through its own
+          window, or over MCP from Claude Code, Codex and Cursor.
+        </p>
+      </div>
+
+      <div class="wrap">
+        <div class="stage">
+          <div class="switch" role="group" aria-label="Which role to show">
+            <button
+              type="button"
+              id="show-ab"
+              data-show="ab"
+              data-legend="Both ways in lead to the same core. The only differences are who holds the model and where the person sits."
+              aria-pressed="true"
+            >
+              <span class="sw ab"></span>Both roles
+            </button>
+            <button
+              type="button"
+              id="show-a"
+              data-show="a"
+              data-legend="Workspace: a person looks at the sections and talks to the agent in the same window. The model is their own."
+              aria-pressed="false"
+            >
+              <span class="sw a"></span>Workspace
+            </button>
+            <button
+              type="button"
+              id="show-b"
+              data-show="b"
+              data-legend="MCP server: Claude Code, Codex or Cursor call our tools. The model is theirs; the tokens and the confirmation are ours."
+              aria-pressed="false"
+            >
+              <span class="sw b"></span>MCP server
+            </button>
+          </div>
+
+          <div class="scroll">
+            <svg
+              class="map"
+              id="map"
+              data-show="ab"
+              viewBox="0 0 1080 700"
+              role="img"
+              aria-label="Diagram: a person in the IMP Agent window and external agents over MCP arrive at the same core, which talks to the work services. IMP calls the model for its own window; an external agent calls its own model itself"
+            >
+              <defs>
+                <marker
+                  id="arr-a"
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="7"
+                  markerHeight="7"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0 L10 5 L0 10 z" class="dot-a" />
+                </marker>
+                <marker
+                  id="arr-b"
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="7"
+                  markerHeight="7"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0 L10 5 L0 10 z" class="dot-b" />
+                </marker>
+                <marker
+                  id="arr-w"
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="7"
+                  markerHeight="7"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0 L10 5 L0 10 z" class="ink-w" />
+                </marker>
+              </defs>
+
+              <!-- Models: for the window IMP calls it, an external agent calls its own -->
+              <g class="role-a">
+                <rect class="llm" x="452" y="10" width="280" height="58" rx="12" />
+                <text class="t-cap" x="470" y="32">LLM</text>
+                <text class="t-h" x="506" y="33">workspace model</text>
+                <text class="t-m" x="470" y="55">gateway · Claude CLI · Codex CLI</text>
+                <path
+                  class="flow edge-a"
+                  d="M592 138 L 592 72"
+                  marker-start="url(#arr-a)"
+                  marker-end="url(#arr-a)"
+                />
+                <text class="t-s" x="604" y="108">prompt, schemas, tool results</text>
+              </g>
+              <g class="role-b">
+                <rect class="llm" x="20" y="622" width="290" height="58" rx="12" />
+                <text class="t-cap" x="38" y="644">LLM</text>
+                <text class="t-h" x="74" y="645">client’s model</text>
+                <text class="t-m" x="38" y="667">Claude · GPT — the client’s choice</text>
+                <path
+                  class="flow edge-b"
+                  d="M165 572 L 165 618"
+                  marker-start="url(#arr-b)"
+                  marker-end="url(#arr-b)"
+                />
+                <text class="t-s" x="330" y="646">
+                  IMP never calls this model or sees its conversation —
+                </text>
+                <text class="t-s" x="330" y="663">it only executes the tool calls</text>
+              </g>
+
+              <g transform="translate(0 80)">
+                <!-- columns -->
+                <text class="t-cap" x="20" y="24">WHO COMES IN</text>
+                <text class="t-cap" x="390" y="24">IMP AGENT</text>
+                <text class="t-cap" x="860" y="24">WORK SERVICES</text>
+
+                <!-- Role A: a person -->
+                <g class="role-a">
+                  <rect class="box" x="20" y="44" width="290" height="190" rx="12" />
+                  <g class="dot-a" aria-hidden="true">
+                    <circle cx="44" cy="62" r="6" />
+                    <path d="M33 83 C33 71, 55 71, 55 83 Z" />
+                  </g>
+                  <text class="t-h" x="64" y="75">A person in the app window</text>
+                  <text class="t-s" x="36" y="100">A view built for the task — sections:</text>
+                  <g>
+                    <rect class="sunk" x="36" y="110" width="58" height="24" rx="6" />
+                    <text class="t-s" x="46" y="127">Jira</text>
+                    <rect class="sunk" x="100" y="110" width="86" height="24" rx="6" />
+                    <text class="t-s" x="110" y="127">Bitbucket</text>
+                    <rect class="sunk" x="192" y="110" width="74" height="24" rx="6" />
+                    <text class="t-s" x="202" y="127">TestOps</text>
+                    <rect class="sunk" x="36" y="140" width="72" height="24" rx="6" />
+                    <text class="t-s" x="46" y="157">Jenkins</text>
+                    <rect class="sunk" x="114" y="140" width="78" height="24" rx="6" />
+                    <text class="t-s" x="124" y="157">Cluster</text>
+                    <rect class="sunk" x="198" y="140" width="94" height="24" rx="6" />
+                    <text class="t-s" x="208" y="157">Confluence</text>
+                  </g>
+                  <text class="t-s" x="36" y="190">…and the agent’s chat right beside them</text>
+                  <text class="t-m" x="36" y="214">model: gateway · Claude / Codex CLI</text>
+
+                  <path
+                    class="flow edge-a"
+                    d="M310 139 C 350 139, 350 110, 392 110"
+                    marker-end="url(#arr-a)"
+                  />
+                </g>
+
+                <!-- Role B: external agents -->
+                <g class="role-b">
+                  <rect class="box" x="20" y="300" width="290" height="190" rx="12" />
+                  <g class="dot-b" aria-hidden="true">
+                    <circle cx="44" cy="318" r="6" />
+                    <path d="M33 339 C33 327, 55 327, 55 339 Z" />
+                  </g>
+                  <text class="t-h" x="64" y="331">A developer in their own agent</text>
+                  <text class="t-s" x="36" y="356">Claude Code · Codex · Cursor</text>
+                  <text class="t-s" x="36" y="378">with their own model, in their own project</text>
+                  <rect class="sunk" x="36" y="394" width="258" height="56" rx="8" />
+                  <text class="t-m" x="48" y="416">› why did shop-api #412 fail?</text>
+                  <text class="t-m" x="48" y="438">jenkins_tests · impagent</text>
+                  <text class="t-m" x="36" y="474">no need to open the app</text>
+
+                  <path
+                    class="flow edge-b"
+                    d="M310 395 C 350 395, 350 426, 392 426"
+                    marker-end="url(#arr-b)"
+                  />
+                </g>
+
+                <!-- Core -->
+                <rect class="core" x="392" y="44" width="400" height="446" rx="14" />
+
+                <g class="role-a">
+                  <rect class="port-a" x="408" y="60" width="368" height="72" rx="10" />
+                  <text class="t-h" x="424" y="86">Views and chat</text>
+                  <text class="t-s" x="424" y="108">
+                    lists, cards, diffs, logs — and the agent’s turn
+                  </text>
+                  <text class="t-s" x="424" y="124">with every edit confirmed</text>
+                </g>
+
+                <g class="role-b">
+                  <rect class="port-b" x="408" y="396" width="368" height="78" rx="10" />
+                  <text class="t-h" x="424" y="422">MCP server</text>
+                  <text class="t-m" x="424" y="442">127.0.0.1 · token · off by default</text>
+                  <text class="t-s" x="424" y="462">
+                    services open by family, writes by checkbox
+                  </text>
+                </g>
+
+                <!-- shared -->
+                <rect class="box" x="408" y="148" width="368" height="232" rx="10" />
+                <text class="t-cap" x="424" y="172">SHARED BY BOTH ROLES</text>
+                <text class="t-h" x="424" y="198">101 tools</text>
+                <text class="t-s" x="424" y="218">
+                  wire formats taken from live services: paging, createmeta,
+                </text>
+                <text class="t-s" x="424" y="235">failure grouping, output caps</text>
+                <text class="t-h" x="424" y="266">Tokens live only here</text>
+                <text class="t-s" x="424" y="286">safeStorage — the client never sees them</text>
+                <rect class="ask" x="424" y="304" width="336" height="60" rx="8" />
+                <text class="t-h" x="438" y="328">Human confirmation</text>
+                <text class="t-s" x="438" y="348">risk is judged by the call’s arguments</text>
+
+                <!-- the question goes to the person’s window even for an external agent -->
+                <g class="role-b">
+                  <path
+                    class="flow edge-w"
+                    d="M424 334 C 360 334, 350 250, 250 236"
+                    marker-end="url(#arr-w)"
+                  />
+                  <text class="t-s ink-w" x="236" y="266" text-anchor="end">
+                    a write from Claude Code
+                  </text>
+                  <text class="t-s ink-w" x="236" y="283" text-anchor="end">
+                    asks in the IMP Agent window
+                  </text>
+                </g>
+
+                <!-- out to the services -->
+                <path class="fan edge-n" d="M792 267 L 836 267" />
+                <g>
+                  <path class="fan edge-n" d="M836 67 L 836 471" />
+                  <rect class="svc" x="860" y="48" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="72">Jira</text>
+                  <rect class="svc" x="860" y="108" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="132">Confluence</text>
+                  <rect class="svc" x="860" y="168" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="192">Bitbucket</text>
+                  <rect class="svc" x="860" y="228" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="252">Jenkins</text>
+                  <rect class="svc" x="860" y="288" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="312">TestOps</text>
+                  <rect class="svc" x="860" y="348" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="372">Kubernetes</text>
+                  <rect class="svc" x="860" y="408" width="200" height="38" rx="9" />
+                  <text class="t-h" x="878" y="432">MSSQL</text>
+                  <path
+                    class="fan edge-n"
+                    d="M836 67 H860 M836 127 H860 M836 187 H860 M836 247 H860 M836 307 H860 M836 367 H860 M836 427 H860"
+                  />
+                  <text class="t-m" x="860" y="480">+ web · HTTP targets</text>
+                </g>
+
+                <text class="t-s" x="592" y="522" text-anchor="middle">
+                  Corporate root CAs, TLS exceptions, rate limits and tracing are shared too
+                </text>
+              </g>
+            </svg>
+          </div>
+          <p class="legend" id="legend">
+            Both ways in lead to the same core. The only differences are who holds the model and
+            where the person sits.
+          </p>
+        </div>
+      </div>
+
+      <div class="wrap roles">
+        <article class="role a" id="role-a">
+          <span class="tag">Role 1 · workspace</span>
+          <h2>A view built for the task, not a generic chat over files</h2>
+          <p>
+            For whoever works in the IMP Agent window. Every service gets its own section: a red
+            TestOps run, a review with its diff and comments, cluster pods and logs. The agent lives
+            right alongside and takes on whatever you point at.
+          </p>
+          <div class="shot">
+            <img
+              class="light"
+              src="../shots/testops-light.webp"
+              alt="TestOps section in the IMP Agent window: failed tests of a run"
+            />
+            <img class="dark" src="../shots/testops-dark.webp" alt="" />
+          </div>
+          <ol class="steps">
+            <li>Open a run in TestOps — the failures are already grouped by cause.</li>
+            <li>One button sends the agent a brief with the run, the build and the branch.</li>
+            <li>The agent reads the Jenkins log, the code and git history, and proposes a fix.</li>
+            <li>
+              The fix and the Jira comment happen only after you approve them in this same window.
+            </li>
+          </ol>
+          <dl class="facts">
+            <dt>Model</dt>
+            <dd>your own: a company gateway or a subscription via the Claude / Codex CLI</dd>
+            <dt>Who sees it</dt>
+            <dd>the person at this window</dd>
+            <dt>Strength</dt>
+            <dd>Claude Code, Cursor and Codex have no view like this</dd>
+          </dl>
+        </article>
+
+        <article class="role b" id="role-b">
+          <span class="tag">Role 2 · MCP server</span>
+          <h2>Your work services in your favorite agent — without a single token in its config</h2>
+          <p>
+            For whoever lives in Claude Code, Codex or Cursor. The app runs an MCP server on
+            loopback, and the other agent gets the same tools. You don’t even have to open the IMP
+            Agent window — the app just needs to be running.
+          </p>
+          <pre class="term"><span class="u">› why did the nightly shop-api #412 fail?</span>
+
+<span class="c">● impagent · jenkins_tests</span>  job=shop-api build=412
+  <span class="r">⎿</span> 3 failures · 1 cause: Connection refused :5432
+     red since #409 — revision changed between #408 and #409
+
+<span class="c">● impagent · jira_comment</span>  key=SHOP-1289
+  <span class="w">⎿ awaiting approval in the IMP Agent window…</span></pre>
+          <ol class="steps">
+            <li>
+              Turn the server on in settings — a token is issued and the address goes into
+              <code>mcp.json</code>.
+            </li>
+            <li>
+              The client connects and receives the team’s rules: Jira projects, environments,
+              addresses.
+            </li>
+            <li>
+              Reads go straight through; a write raises a dialog in the IMP Agent window, naming the
+              client.
+            </li>
+            <li>
+              Every call shows up in the Debug section: client, arguments, duration, response.
+            </li>
+          </ol>
+          <dl class="facts">
+            <dt>Model</dt>
+            <dd>someone else’s — whatever the client uses</dd>
+            <dt>Who sees it</dt>
+            <dd>a developer in their own editor or terminal</dd>
+            <dt>Strength</dt>
+            <dd>valuable even to someone who never opens our chat</dd>
+          </dl>
+        </article>
+      </div>
+
+      <section class="wrap catalog" id="catalog" data-show="ab">
+        <p class="kicker">Team catalog</p>
+        <h2>How the team works — kept in one repository and delivered to both roles</h2>
+        <p class="intro-text">
+          Rules like “how we name PRs”, “where bugs go” and “what our jobs mean” used to live in one
+          person’s settings, tied to a path on their disk. Now they go into a shared Bitbucket
+          repository, and every IMP on the team reads it on its own. Rules change by pull request,
+          just like code.
+        </p>
+
+        <ol class="timeline" aria-label="How a change reaches the team">
+          <li>
+            <span class="when">pull request</span><b>A change in the catalog</b>a new preset or a
+            line in the rules
+          </li>
+          <li>
+            <span class="when">review · merge</span><b>The team agreed</b>the rule is merged into
+            the catalog branch
+          </li>
+          <li>
+            <span class="when">≤ 30 minutes</span><b>Every IMP checks the commit</b>files are
+            re-read only after a new commit
+          </li>
+          <li>
+            <span class="when">right away</span><b>Works for everyone</b>in their own window and in
+            their Claude Code, Codex, Cursor
+          </li>
+        </ol>
+
+        <div class="matrix" role="table" aria-label="What the catalog holds and where it goes">
+          <div class="mh f" role="columnheader">In the repository</div>
+          <div class="mh a col-a" role="columnheader">Workspace</div>
+          <div class="mh b col-b" role="columnheader">MCP server</div>
+
+          <div class="folder" role="rowheader">
+            <code>presets/</code><span>an approach to a task: “review against our checklist”</span>
+          </div>
+          <div class="cell-a col-a" role="cell">
+            <b>A preset in the picker</b>under the team’s group — chosen per conversation, appended
+            after the base instructions
+          </div>
+          <div class="cell-b col-b" role="cell">
+            <span class="none"
+              >Not delivered yet. A preset is chosen per conversation, and the server has no
+              conversations: <code>instructions</code> are one per connection, so the preset would
+              become mandatory for every chat of that client</span
+            >
+          </div>
+
+          <div class="folder" role="rowheader">
+            <code>rules/</code><span>how the team works with services — one file per project</span>
+          </div>
+          <div class="cell-a col-a" role="cell">
+            <b>Rules in the agent’s instructions</b>bound to a folder by the repository in origin,
+            not by a path on disk: everyone keeps the project wherever they like
+          </div>
+          <div class="cell-b col-b" role="cell">
+            <b>Instructions on connect</b>Claude Code and Codex put them into the system prompt —
+            they survive <code>/clear</code>. When the rules change, Claude Code and Codex reconnect
+            and get the new ones
+          </div>
+
+          <div class="folder" role="rowheader">
+            <code>handoff/</code><span>what “look into this” means for the team</span>
+          </div>
+          <div class="cell-a col-a" role="cell">
+            <b>An add-on to the send-to-chat button</b>the brief that button sends from the
+            Bitbucket, Jira, Jenkins, TestOps and Cluster sections goes to the agent together with
+            it
+          </div>
+          <div class="cell-b col-b" role="cell">
+            <b>Slash commands</b
+            ><span class="cmd">/mcp__impagent__review_pr pr=&lt;link&gt;</span>the same brief as the
+            button, with the same add-on — seven commands, with a link straight from the browser
+          </div>
+        </div>
+
+        <div class="files">
+          <div class="file">
+            <span class="name">rules/shop-api.md</span>
+            <pre class="term"><span class="u">---</span>
+<span class="k">repos:</span> SHOP/shop-api, SHOP/shop-web
+<span class="k">jira_projects:</span> SHOP
+<span class="k">watched_jobs:</span> |
+  shop-api-nightly   # full regression once a day
+  shop-api-deploy    # build and roll out to stage
+<span class="u">---</span>
+
+<span class="u">## Bitbucket</span>
+PR title: &lt;release&gt; | &lt;issue key&gt; | &lt;title&gt;.
+Reviewers are added automatically.
+
+<span class="u">## Kubernetes</span>
+shop-stage-* are test environments, prod is shop-prod only.</pre>
+          </div>
+          <div class="aside">
+            <h3>Yours adds on, it doesn’t replace</h3>
+            <p>
+              A team rule shows up in settings as a box above your own field, with its source:
+              catalog · file · commit. Your own text is appended after it and never overrides the
+              team’s.
+            </p>
+            <h3>Linked folders stay fresh on their own</h3>
+            <p>
+              Autotests and docs next to the project are no longer read as a snapshot of the last
+              manual <code>git pull</code>: a clone in the linked-folders table has a sync checkbox
+              and a schedule. While the agent is working, the folder is left alone.
+            </p>
+            <h3>What stays out of the catalog</h3>
+            <p>
+              Paths on disk and the command environment — that is knowledge about one person’s
+              setup.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="wrap shared">
+        <p class="kicker">Why one app, not two</p>
+        <h2>Both roles stand on the same foundation</h2>
+        <p>
+          A standalone MCP server would have to be given everything the app already has — and it
+          still wouldn’t know how these services really respond.
+        </p>
+        <div class="grid4">
+          <div class="cell">
+            <h3>Secrets</h3>
+            <p>
+              Tokens live in the system keychain. They are never copied into a client config or into
+              environment variables.
+            </p>
+          </div>
+          <div class="cell">
+            <h3>Service knowledge</h3>
+            <p>
+              Bitbucket paging, Jira <code>createmeta</code>, Jenkins stage names, TestOps failure
+              grouping.
+            </p>
+          </div>
+          <div class="cell">
+            <h3>Human in the loop</h3>
+            <p>
+              Risk judged by the arguments, a dialog with the diff, “always allow” — one rule for
+              both ways in.
+            </p>
+          </div>
+          <div class="cell">
+            <h3>Company network</h3>
+            <p>
+              Corporate root CAs, fingerprint trust, per-host rate limits, a trace of every request.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="../roles.js"></script>
+  </body>
+</html>

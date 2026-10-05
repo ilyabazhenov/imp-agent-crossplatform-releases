@@ -1,0 +1,753 @@
+:root {
+  --bg: #f4f6f8;
+  --bg-raised: #fff;
+  --bg-sunken: #eceff3;
+  --line: #d6d9df;
+  --line-soft: #e6e9ed;
+  --text: #1c1f26;
+  --muted: #5e636d;
+  --faint: #888c94;
+  --accent: #156cdd;
+  --accent-soft: color-mix(in srgb, #156cdd 12%, #fff);
+  --agent: #6c4dd6;
+  --agent-soft: color-mix(in srgb, #6c4dd6 12%, #fff);
+  --added: #00814f;
+  --warn: #9d6603;
+  --warn-soft: color-mix(in srgb, #9d6603 12%, #fff);
+  --shadow: 0 24px 60px rgb(28 31 38 / 14%);
+  --shadow-soft: 0 2px 10px rgb(28 31 38 / 8%);
+  --radius: 14px;
+  --page: 1120px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #1e1f22;
+    --bg-raised: #2c2e32;
+    --bg-sunken: #161719;
+    --line: #3c3f44;
+    --line-soft: #2f3236;
+    --text: #e2e5e9;
+    --muted: #9a9fa7;
+    --faint: #82878f;
+    --accent: #68a5ff;
+    --accent-soft: color-mix(in srgb, #68a5ff 16%, #2c2e32);
+    --agent: #9b8afe;
+    --agent-soft: color-mix(in srgb, #9b8afe 16%, #2c2e32);
+    --added: #43d58f;
+    --warn: #f5ae4b;
+    --warn-soft: color-mix(in srgb, #f5ae4b 14%, #2c2e32);
+    --shadow: 0 24px 60px rgb(0 0 0 / 50%);
+    --shadow-soft: 0 2px 10px rgb(0 0 0 / 35%);
+  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #1e1f22;
+  --bg-raised: #2c2e32;
+  --bg-sunken: #161719;
+  --line: #3c3f44;
+  --line-soft: #2f3236;
+  --text: #e2e5e9;
+  --muted: #9a9fa7;
+  --faint: #82878f;
+  --accent: #68a5ff;
+  --accent-soft: color-mix(in srgb, #68a5ff 16%, #2c2e32);
+  --agent: #9b8afe;
+  --agent-soft: color-mix(in srgb, #9b8afe 16%, #2c2e32);
+  --added: #43d58f;
+  --warn: #f5ae4b;
+  --warn-soft: color-mix(in srgb, #f5ae4b 14%, #2c2e32);
+  --shadow: 0 24px 60px rgb(0 0 0 / 50%);
+  --shadow-soft: 0 2px 10px rgb(0 0 0 / 35%);
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+.wrap {
+  /* Колонка main — грид, а автополя у элемента грида сжимают его по содержимому:
+     без явной ширины блок со схемой вставал уже соседей. */
+  width: 100%;
+  max-width: var(--page);
+  margin: 0 auto;
+  padding-inline: 20px;
+}
+main {
+  padding-block: 48px 72px;
+  display: grid;
+  gap: 56px;
+}
+
+/* ── Вступление ─────────────────────────────────────────── */
+.intro {
+  display: grid;
+  gap: 12px;
+  max-width: 760px;
+}
+.kicker {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* Обратный путь слева, другой язык справа — одной строкой над заголовком. */
+.crumbs {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.back {
+  color: inherit;
+  text-decoration: none;
+}
+.back:hover {
+  color: var(--accent);
+}
+h1 {
+  margin: 0;
+  font-size: clamp(30px, 4.4vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+h1 .a {
+  color: var(--accent);
+}
+h1 .b {
+  color: var(--agent);
+}
+.lead {
+  margin: 0;
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 64ch;
+}
+
+/* ── Схема ──────────────────────────────────────────────── */
+.stage {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 18px 18px 8px;
+  display: grid;
+  gap: 10px;
+}
+.switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px;
+  background: var(--bg-sunken);
+  border-radius: 10px;
+  justify-self: start;
+}
+.switch button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  border: 0;
+  border-radius: 7px;
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.switch button:hover {
+  color: var(--text);
+}
+.switch button[aria-pressed='true'] {
+  background: var(--bg-raised);
+  color: var(--text);
+  box-shadow: var(--shadow-soft);
+}
+.switch button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.sw {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.sw.a {
+  background: var(--accent);
+}
+.sw.b {
+  background: var(--agent);
+}
+.sw.ab {
+  background: linear-gradient(90deg, var(--accent) 50%, var(--agent) 50%);
+}
+
+.scroll {
+  overflow-x: auto;
+}
+svg.map {
+  display: block;
+  width: 100%;
+  min-width: 720px;
+  height: auto;
+}
+.map text {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  fill: var(--text);
+}
+.map .t-h {
+  font-size: 15px;
+  font-weight: 600;
+}
+.map .t-s {
+  font-size: 12.5px;
+  fill: var(--muted);
+}
+.map .t-m {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  fill: var(--muted);
+}
+.map .t-cap {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  fill: var(--faint);
+}
+.map .box {
+  fill: var(--bg-raised);
+  stroke: var(--line);
+}
+.map .sunk {
+  fill: var(--bg-sunken);
+  stroke: none;
+}
+.map .core {
+  fill: var(--bg-sunken);
+  stroke: var(--line);
+}
+.map .svc {
+  fill: var(--bg-raised);
+  stroke: var(--line);
+}
+.map .port-a {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+}
+.map .port-b {
+  fill: var(--agent-soft);
+  stroke: var(--agent);
+}
+.map .llm {
+  fill: var(--bg-raised);
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+.map .ask {
+  fill: var(--warn-soft);
+  stroke: var(--warn);
+}
+.map .edge-a {
+  stroke: var(--accent);
+}
+.map .edge-b {
+  stroke: var(--agent);
+}
+.map .edge-w {
+  stroke: var(--warn);
+}
+.map .edge-n {
+  stroke: var(--faint);
+}
+.map .flow {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-dasharray: 7 7;
+  animation: flow 1.2s linear infinite;
+}
+.map .fan {
+  fill: none;
+  stroke-width: 1.5;
+}
+.map .dot-a {
+  fill: var(--accent);
+}
+.map .dot-b {
+  fill: var(--agent);
+}
+.map .dot-n {
+  fill: var(--faint);
+}
+.map .ink-a {
+  fill: var(--accent);
+}
+.map .ink-b {
+  fill: var(--agent);
+}
+.map .ink-w {
+  fill: var(--warn);
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+.map .role-a,
+.map .role-b {
+  transition: opacity 0.25s;
+}
+.map[data-show='a'] .role-b {
+  opacity: 0.14;
+}
+.map[data-show='b'] .role-a {
+  opacity: 0.14;
+}
+
+.legend {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 4px 2px 10px;
+}
+
+/* ── Роли ───────────────────────────────────────────────── */
+.roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.role {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  transition: opacity 0.25s;
+}
+.role.dim {
+  opacity: 0.45;
+}
+.tag {
+  justify-self: start;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.role.a .tag {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.role.b .tag {
+  background: var(--agent-soft);
+  color: var(--agent);
+}
+.role h2 {
+  margin: 0;
+  font-size: 23px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.role p {
+  margin: 0;
+  color: var(--muted);
+}
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 14px;
+  margin: 0;
+  font-size: 15px;
+}
+.facts dt {
+  color: var(--faint);
+}
+.facts dd {
+  margin: 0;
+}
+
+.shot {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+}
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.shot .dark {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .shot .light {
+    display: none;
+  }
+  :root:not([data-theme='light']) .shot .dark {
+    display: block;
+  }
+}
+:root[data-theme='dark'] .shot .light {
+  display: none;
+}
+:root[data-theme='dark'] .shot .dark {
+  display: block;
+}
+
+.term {
+  margin: 0;
+  background: var(--bg-sunken);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--muted);
+}
+.term .u {
+  color: var(--text);
+}
+.term .c {
+  color: var(--agent);
+}
+.term .r {
+  color: var(--added);
+}
+.term .w {
+  color: var(--warn);
+}
+
+.steps {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 6px;
+  font-size: 15px;
+}
+.steps li::marker {
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.role.a .steps li::marker {
+  color: var(--accent);
+}
+.role.b .steps li::marker {
+  color: var(--agent);
+}
+
+/* ── Каталог команды ──────────────────────────────────── */
+.catalog {
+  display: grid;
+  gap: 22px;
+}
+.catalog h2 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.catalog > .intro-text {
+  margin: 0;
+  color: var(--muted);
+  max-width: 70ch;
+}
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.timeline li {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  padding: 12px 14px 12px 14px;
+  border-top: 2px solid var(--line);
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.timeline li b {
+  color: var(--text);
+  font-weight: 600;
+}
+.timeline li:last-child {
+  border-top-color: var(--added);
+}
+.timeline .when {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--faint);
+}
+.matrix {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.8fr) minmax(0, 1fr) minmax(0, 1fr);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-raised);
+}
+.matrix > div {
+  padding: 16px 18px;
+  border-top: 1px solid var(--line-soft);
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  transition: opacity 0.25s;
+}
+.matrix > .mh {
+  border-top: 0;
+  padding-block: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.matrix > .mh.a {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.matrix > .mh.b {
+  color: var(--agent);
+  background: var(--agent-soft);
+}
+.matrix > .mh.f {
+  color: var(--faint);
+  background: var(--bg-sunken);
+}
+.matrix .folder {
+  background: var(--bg-sunken);
+}
+.matrix .folder code {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.matrix .folder span {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+/* Ячейка — поток текста, а не сетка: иначе каждый инлайновый <code> встаёт своей строкой. */
+.matrix > .cell-a,
+.matrix > .cell-b {
+  display: block;
+  font-size: 14.5px;
+}
+.matrix .cell-a b,
+.matrix .cell-b b,
+.matrix .cmd,
+.matrix .cell-a::before,
+.matrix .cell-b::before {
+  display: block;
+  margin-bottom: 4px;
+}
+.matrix .cell-a b,
+.matrix .cell-b b {
+  font-weight: 600;
+}
+.matrix .none {
+  color: var(--faint);
+}
+.matrix .cmd {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--agent);
+  overflow-wrap: anywhere;
+}
+.catalog[data-show='a'] .col-b,
+.catalog[data-show='b'] .col-a {
+  opacity: 0.35;
+}
+.files {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.file {
+  display: grid;
+  gap: 6px;
+}
+.file .name {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--faint);
+}
+.file .term {
+  white-space: pre;
+}
+.term .k {
+  color: var(--accent);
+}
+.aside {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.aside h3 {
+  margin: 0;
+  font-size: 17px;
+}
+.aside p {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+/* ── Общее ядро ─────────────────────────────────────────── */
+.shared {
+  display: grid;
+  gap: 18px;
+}
+.shared h2 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+}
+.shared > p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 70ch;
+}
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line-soft);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.cell {
+  background: var(--bg-raised);
+  padding: 18px 20px;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.cell h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.cell p {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+.measure {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 860px) {
+  .timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .files {
+    grid-template-columns: 1fr;
+  }
+  .matrix {
+    grid-template-columns: 1fr;
+  }
+  .matrix > .mh.a,
+  .matrix > .mh.b,
+  .matrix > .mh.f {
+    display: none;
+  }
+  .matrix .cell-a::before {
+    content: 'Рабочее место';
+  }
+  .matrix .cell-b::before {
+    content: 'Дверь MCP';
+  }
+  .matrix .cell-a::before,
+  .matrix .cell-b::before {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .matrix .cell-a::before {
+    color: var(--accent);
+  }
+  .matrix .cell-b::before {
+    color: var(--agent);
+  }
+}
+@media (max-width: 860px) {
+  .roles {
+    grid-template-columns: 1fr;
+  }
+  .grid4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .grid4 {
+    grid-template-columns: 1fr;
+  }
+  .role {
+    padding: 18px;
+  }
+  .facts {
+    grid-template-columns: 1fr;
+    gap: 0 0;
+  }
+  .facts dd {
+    margin-bottom: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map .flow {
+    animation: none;
+  }
+  * {
+    transition: none !important;
+  }
+}

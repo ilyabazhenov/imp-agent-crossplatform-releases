@@ -9,6 +9,16 @@
       content="Чат с моделью, файлы и шелл, git — и рядом Jira, Confluence, Bitbucket, Jenkins, TestOps и Kubernetes в одном окне. macOS и Windows."
     />
     <link rel="icon" href="icon.png" />
+    <link
+      rel="alternate"
+      hreflang="ru"
+      href="https://ilyabazhenov.github.io/imp-agent-crossplatform-releases/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://ilyabazhenov.github.io/imp-agent-crossplatform-releases/en/"
+    />
     <meta property="og:title" content="IMP Agent" />
     <meta
       property="og:description"
@@ -19,441 +29,7 @@
       content="https://ilyabazhenov.github.io/imp-agent-crossplatform-releases/shots/chat-light.webp"
     />
     <meta property="og:type" content="website" />
-    <style>
-      /* Палитра — та же, что в приложении: страница и окно должны читаться одним
-         продуктом. Тёмная половина объявлена медиазапросом, а не отдельным файлом. */
-      :root {
-        color-scheme: light;
-        --bg: #f4f6f8;
-        --bg-raised: #fff;
-        --bg-sunken: #eceff3;
-        --line: #d6d9df;
-        --line-soft: #e6e9ed;
-        --text: #1c1f26;
-        --muted: #5e636d;
-        --faint: #888c94;
-        --accent: #156cdd;
-        --agent: #6c4dd6;
-        --added: #00814f;
-        --warn: #9d6603;
-        --brand-ink: #221f35;
-        --brand-imp: #ff6a45;
-        --shadow: 0 24px 60px rgb(28 31 38 / 14%);
-        --shadow-soft: 0 2px 10px rgb(28 31 38 / 8%);
-        --radius: 14px;
-        --page: 1120px;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          color-scheme: dark;
-          --bg: #1e1f22;
-          --bg-raised: #2c2e32;
-          --bg-sunken: #161719;
-          --line: #3c3f44;
-          --line-soft: #2f3236;
-          --text: #e2e5e9;
-          --muted: #9a9fa7;
-          --faint: #82878f;
-          --accent: #68a5ff;
-          --agent: #9b8afe;
-          --added: #43d58f;
-          --warn: #f5ae4b;
-          --shadow: 0 24px 60px rgb(0 0 0 / 50%);
-          --shadow-soft: 0 2px 10px rgb(0 0 0 / 35%);
-        }
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--text);
-        font-family:
-          system-ui,
-          -apple-system,
-          'Segoe UI',
-          sans-serif;
-        font-size: 17px;
-        line-height: 1.6;
-        /* Модель печатает пути и имена классов, а точка и слэш переносом не считаются. */
-        overflow-wrap: anywhere;
-      }
-
-      a {
-        color: var(--accent);
-      }
-
-      code,
-      kbd {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 0.92em;
-      }
-
-      .wrap {
-        max-width: var(--page);
-        margin: 0 auto;
-        padding: 0 24px;
-      }
-
-      /* ── Шапка ───────────────────────────────────────────────────────────────────── */
-      .top {
-        position: sticky;
-        top: 0;
-        z-index: 5;
-        backdrop-filter: blur(12px);
-        background: color-mix(in srgb, var(--bg) 82%, transparent);
-        border-bottom: 1px solid var(--line-soft);
-      }
-
-      .top .wrap {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        height: 60px;
-      }
-
-      .mark {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-      }
-
-      .mark img {
-        width: 28px;
-        height: 28px;
-        border-radius: 7px;
-      }
-
-      .top nav {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        font-size: 15px;
-      }
-
-      .top nav a {
-        color: var(--muted);
-        text-decoration: none;
-      }
-
-      .top nav a:hover {
-        color: var(--text);
-      }
-
-      @media (max-width: 700px) {
-        .top nav .wide-only {
-          display: none;
-        }
-      }
-
-      /* ── Первый экран ────────────────────────────────────────────────────────────── */
-      .hero {
-        padding: 72px 0 8px;
-        text-align: center;
-      }
-
-      .hero .face {
-        border-radius: 22px;
-        box-shadow: var(--shadow-soft);
-      }
-
-      .hero .name {
-        margin: 16px 0 6px;
-        font-size: 15px;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-
-      .hero h1 {
-        margin: 0;
-        font-size: clamp(32px, 6vw, 62px);
-        line-height: 1.08;
-        letter-spacing: -0.03em;
-      }
-
-      .hero p.lead {
-        margin: 20px auto 0;
-        max-width: 660px;
-        font-size: clamp(18px, 2.2vw, 21px);
-        color: var(--muted);
-      }
-
-      .actions {
-        margin-top: 32px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 13px 22px;
-        border-radius: 11px;
-        border: 1px solid transparent;
-        font: inherit;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
-      }
-
-      .btn.primary {
-        background: var(--brand-imp);
-        color: #fff;
-        box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-imp) 34%, transparent);
-      }
-
-      .btn.primary:hover {
-        background: color-mix(in srgb, var(--brand-imp) 88%, #000);
-      }
-
-      .btn.ghost {
-        border-color: var(--line);
-        color: var(--text);
-        background: var(--bg-raised);
-      }
-
-      .btn.ghost:hover {
-        border-color: var(--faint);
-      }
-
-      .under {
-        margin-top: 14px;
-        font-size: 14px;
-        color: var(--faint);
-      }
-
-      .under b {
-        color: var(--muted);
-        font-weight: 600;
-      }
-
-      /* ── Кадры окна ──────────────────────────────────────────────────────────────── */
-      .shot {
-        margin: 48px auto 0;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        background: var(--bg-raised);
-        line-height: 0;
-      }
-
-      .shot img {
-        width: 100%;
-        height: auto;
-        display: block;
-        /* Пропорция кадра объявлена заранее: пока PNG не доехал, места он не занимает,
-           и страница прыгает на каждой картинке — вместе с якорями разделов. */
-        aspect-ratio: 2160 / 1320;
-      }
-
-      /* Кадр снят в обеих темах: показываем тот, в котором сидит читатель. */
-      .shot img.dark {
-        display: none;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        .shot img.light {
-          display: none;
-        }
-
-        .shot img.dark {
-          display: block;
-        }
-      }
-
-      /* ── Полосы разделов ─────────────────────────────────────────────────────────── */
-      section {
-        padding: 96px 0 0;
-      }
-
-      h2 {
-        margin: 0;
-        font-size: clamp(26px, 3.4vw, 34px);
-        line-height: 1.2;
-        letter-spacing: -0.02em;
-      }
-
-      .kicker {
-        margin: 0 0 10px;
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--brand-imp);
-      }
-
-      .say {
-        max-width: 720px;
-      }
-
-      .say p {
-        color: var(--muted);
-        font-size: 18px;
-      }
-
-      .say p b {
-        color: var(--text);
-        font-weight: 600;
-      }
-
-      /* ── Плитка возможностей ─────────────────────────────────────────────────────── */
-      .tiles {
-        margin-top: 36px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 20px;
-      }
-
-      .tile {
-        background: var(--bg-raised);
-        border: 1px solid var(--line-soft);
-        border-radius: var(--radius);
-        padding: 22px;
-        box-shadow: var(--shadow-soft);
-      }
-
-      .tile h3 {
-        margin: 0 0 8px;
-        font-size: 18px;
-      }
-
-      .tile p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 15.5px;
-      }
-
-      .tile .glyph {
-        display: block;
-        width: 26px;
-        height: 26px;
-        margin-bottom: 14px;
-        color: var(--accent);
-      }
-
-      /* ── Установка ───────────────────────────────────────────────────────────────── */
-      .halves {
-        margin-top: 36px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 24px;
-      }
-
-      .card {
-        background: var(--bg-raised);
-        border: 1px solid var(--line-soft);
-        border-radius: var(--radius);
-        padding: 24px;
-        box-shadow: var(--shadow-soft);
-      }
-
-      .card h3 {
-        margin: 0 0 12px;
-        font-size: 19px;
-      }
-
-      .card ol,
-      .card ul {
-        margin: 0;
-        padding-left: 20px;
-        color: var(--muted);
-        font-size: 16px;
-      }
-
-      .card li + li {
-        margin-top: 8px;
-      }
-
-      pre {
-        margin: 14px 0 0;
-        padding: 12px 14px;
-        background: var(--bg-sunken);
-        border: 1px solid var(--line-soft);
-        border-radius: 10px;
-        overflow-x: auto;
-        font-size: 14px;
-        line-height: 1.5;
-        color: var(--text);
-      }
-
-      .files {
-        margin-top: 18px;
-        display: grid;
-        gap: 8px;
-      }
-
-      .file {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 10px 14px;
-        border: 1px solid var(--line-soft);
-        border-radius: 10px;
-        background: var(--bg-sunken);
-        text-decoration: none;
-        color: var(--text);
-        font-size: 15px;
-      }
-
-      .file:hover {
-        border-color: var(--accent);
-      }
-
-      .file span.what {
-        color: var(--muted);
-        font-size: 14px;
-      }
-
-      /* ── Подвал ──────────────────────────────────────────────────────────────────── */
-      footer {
-        margin-top: 110px;
-        border-top: 1px solid var(--line-soft);
-        padding: 32px 0 56px;
-        color: var(--faint);
-        font-size: 14.5px;
-      }
-
-      footer .wrap {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px 24px;
-        align-items: center;
-      }
-
-      footer a {
-        color: var(--muted);
-        text-decoration: none;
-      }
-
-      footer a:hover {
-        color: var(--text);
-      }
-
-      footer .spacer {
-        margin-left: auto;
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        * {
-          transition: none !important;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="site.css" />
   </head>
   <body>
     <header class="top">
@@ -462,9 +38,12 @@
         <nav>
           <a href="#chat" class="wide-only">Что он делает</a>
           <a href="#install">Установка</a>
-          <a href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases"
+          <a
+            href="https://github.com/ilyabazhenov/imp-agent-crossplatform-releases/releases"
+            class="wide-only"
             >Все версии</a
           >
+          <a href="en/index.html" lang="en" hreflang="en">English</a>
         </nav>
       </div>
     </header>
@@ -689,6 +268,7 @@
             <b>Токены при этом остаются в приложении</b>: клиенту не надо ни знать их, ни
             настраивать адреса.
           </p>
+          <p><a href="roles.html">Как рабочее место и дверь MCP держатся на одном ядре →</a></p>
         </div>
         <div class="wrap">
           <div class="tiles">
@@ -809,7 +389,7 @@
                   IMP Agent Setup <span class="what">64-битная Windows</span>
                 </a>
               </div>
-              <p style="margin: 18px 0 0; color: var(--muted); font-size: 15px">
+              <p class="note">
                 Не каждая версия выходит для обеих систем. Если для Windows файла в последнем релизе
                 нет, возьмите его из предыдущего — обновление приедет со следующим.
               </p>
@@ -819,16 +399,16 @@
           <div class="halves">
             <div class="card">
               <h3>Лицензия</h3>
-              <p style="margin: 0; color: var(--muted); font-size: 16px">
+              <p class="plain">
                 После установки окно покажет код машины — пришлите его, и в ответ придёт строка
-                активации. Проверка идёт <b style="color: var(--text)">офлайн</b>: ни лицензионного
-                сервера, ни интернета для запуска не нужно. Лицензия действует включительно по
-                указанный день, продлить её можно заранее.
+                активации. Проверка идёт <b>офлайн</b>: ни лицензионного сервера, ни интернета для
+                запуска не нужно. Лицензия действует включительно по указанный день, продлить её
+                можно заранее.
               </p>
             </div>
             <div class="card">
               <h3>Доступы</h3>
-              <p style="margin: 0; color: var(--muted); font-size: 16px">
+              <p class="plain">
                 Ключ модели и токены сервисов хранятся зашифрованными средствами системы и в ленту
                 обратно не отдаются. Из журналов они вычищаются на всех уровнях подробности.
               </p>
@@ -851,81 +431,6 @@
       </div>
     </footer>
 
-    <script>
-      // Кнопка называет ФАЙЛ, а не «страницу релизов»: человек, пришедший скачать, не
-      // должен выбирать между четырьмя архивами, не зная, какой из них его.
-      (function () {
-        const РЕПО = 'ilyabazhenov/imp-agent-crossplatform-releases';
-        const кнопка = document.getElementById('download');
-        const версия = document.getElementById('version');
-
-        const система = (function () {
-          const данные = navigator.userAgentData;
-          const строка = navigator.userAgent;
-          const платформа = (данные && данные.platform) || navigator.platform || '';
-          if (/Win/i.test(платформа) || /Windows/i.test(строка)) return 'win';
-          if (/Mac/i.test(платформа) || /Mac OS X/i.test(строка)) {
-            // Apple Silicon не признаётся в user-agent: Safari и Chrome одинаково пишут
-            // «Intel Mac OS X». Отличаем по числу ядер — у M-серии их 8 и больше.
-            return (navigator.hardwareConcurrency || 0) >= 8 ? 'mac-arm' : 'mac-intel';
-          }
-          return 'other';
-        })();
-
-        const подпись = {
-          'mac-arm': 'Скачать для Mac (Apple Silicon)',
-          'mac-intel': 'Скачать для Mac (Intel)',
-          win: 'Скачать для Windows',
-          other: 'Скачать',
-        };
-        кнопка.textContent = подпись[система];
-
-        const ищем = {
-          'mac-arm': (имя) => /arm64-mac\.zip$/i.test(имя),
-          'mac-intel': (имя) => /-mac\.zip$/i.test(имя) && !/arm64/i.test(имя),
-          win: (имя) => /\.exe$/i.test(имя),
-          other: () => false,
-        };
-
-        fetch('https://api.github.com/repos/' + РЕПО + '/releases/latest', {
-          headers: { Accept: 'application/vnd.github+json' },
-        })
-          .then((ответ) => (ответ.ok ? ответ.json() : Promise.reject(ответ.status)))
-          .then((релиз) => {
-            const файлы = релиз.assets || [];
-            const найти = (правило) => файлы.find((файл) => правило(файл.name));
-            const мой = найти(ищем[система]);
-            if (мой) кнопка.href = мой.browser_download_url;
-            версия.textContent = 'Версия ' + String(релиз.tag_name || '').replace(/^v/, '');
-
-            const поставить = (узел, правило, размер) => {
-              if (!узел) return;
-              const файл = найти(правило);
-              // Файла этой системы в последнем релизе может не быть вовсе — не каждая
-              // версия выходит для обеих. Тогда ссылка ведёт в СПИСОК релизов, а не на
-              // последний: в нём нужного файла нет, и человек упрётся в ту же пустоту.
-              if (!файл) {
-                узел.href = 'https://github.com/' + РЕПО + '/releases';
-                const нет = узел.querySelector('.what');
-                if (нет) нет.textContent = нет.textContent + ' · в прошлом релизе';
-                return;
-              }
-              узел.href = файл.browser_download_url;
-              const что = узел.querySelector('.what');
-              if (что && размер) что.textContent = что.textContent + ' · ' + размер(файл);
-            };
-            const мегабайты = (файл) => Math.round(файл.size / 1048576) + ' МБ';
-            const маки = document.querySelectorAll('#mac-files .file');
-            поставить(маки[0], ищем['mac-arm'], мегабайты);
-            поставить(маки[1], ищем['mac-intel'], мегабайты);
-            поставить(document.querySelector('#win-files .file'), ищем.win, мегабайты);
-          })
-          // Не достучались до GitHub — ссылки остаются на страницу последнего релиза,
-          // то есть кнопка работает и без этого запроса.
-          .catch(() => {
-            кнопка.href = 'https://github.com/' + РЕПО + '/releases/latest';
-          });
-      })();
-    </script>
+    <script src="site.js"></script>
   </body>
 </html>
