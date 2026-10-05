@@ -31,6 +31,18 @@
       show(b.dataset.show);
     });
   });
+  // Переполнение схемы меряется, а не выводится из ширины окна: подсказка «листайте»
+  // нужна ровно тогда, когда листать есть куда, и гаснет у правого края.
+  var stage = document.querySelector('.stage');
+  var scroller = document.querySelector('.scroll');
+  function measure() {
+    var room = scroller.scrollWidth - scroller.clientWidth;
+    stage.classList.toggle('overflows', room > 1);
+    stage.classList.toggle('at-end', scroller.scrollLeft >= room - 1);
+  }
+  scroller.addEventListener('scroll', measure, { passive: true });
+  window.addEventListener('resize', measure);
+  measure();
   var saved = null;
   try {
     saved = localStorage.getItem('roles-show');

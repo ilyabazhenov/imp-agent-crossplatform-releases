@@ -335,6 +335,21 @@ svg.map {
   opacity: 0.14;
 }
 
+/* Схема на узком экране шире своей коробки и листается вбок, а полосу прокрутки iOS
+   не показывает вовсе: без подсказки видна левая треть, и она выглядит всей схемой.
+   Класс `overflows` ставит скрипт по настоящему переполнению, а не по ширине окна. */
+.swipe-hint {
+  display: none;
+  margin: 0;
+  font-size: 13px;
+  color: var(--faint);
+}
+.stage.overflows .swipe-hint {
+  display: block;
+}
+.stage.overflows:not(.at-end) .scroll {
+  mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+}
 .legend {
   margin: 0;
   font-size: 13px;
@@ -615,6 +630,13 @@ svg.map {
   font-size: 12.5px;
   color: var(--faint);
 }
+/* Пример в карточке роли читают целиком: длинная строка переносится, а не уезжает
+   за край — на десктопе русская строка ответа не влезала на 39 точек. Файл правил
+   ниже держит `pre`: выровненные комментарии там часть смысла. */
+.role .term {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 .file .term {
   white-space: pre;
 }
@@ -731,6 +753,12 @@ svg.map {
 @media (max-width: 520px) {
   .grid4 {
     grid-template-columns: 1fr;
+  }
+  /* Файл правил на телефоне тоже переносится: выровненные комментарии ломаются,
+     но обрезанная строка хуже — полосы прокрутки iOS не показывает. */
+  .file .term {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
   .role {
     padding: 18px;

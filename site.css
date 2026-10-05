@@ -297,7 +297,8 @@ h2 {
 .tiles {
   margin-top: 36px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  /* min(…, 100%): на экране уже минимума колонка сжимается, а не распирает страницу. */
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
   gap: 20px;
 }
 
@@ -332,7 +333,7 @@ h2 {
 .halves {
   margin-top: 36px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 24px;
 }
 
@@ -367,7 +368,10 @@ pre {
   background: var(--bg-sunken);
   border: 1px solid var(--line-soft);
   border-radius: 10px;
-  overflow-x: auto;
+  /* Команду копируют целиком, а читают глазами: на телефоне строка переносится,
+     а не уезжает за край, где её не видно (полосы прокрутки iOS не показывает). */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   font-size: 14px;
   line-height: 1.5;
   color: var(--text);
@@ -445,6 +449,33 @@ footer a:hover {
 
 footer .spacer {
   margin-left: auto;
+}
+
+/* ── Узкий экран ─────────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .wrap {
+    padding: 0 16px;
+  }
+
+  section {
+    padding-top: 72px;
+  }
+
+  .card,
+  .tile {
+    padding: 20px;
+  }
+
+  /* Имя файла и его приписка в две колонки по 130 точек — это два обрубка. */
+  .file {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* Строка, переехавшая на свою строку, читается подписью, а не прижатой вправо. */
+  footer .spacer {
+    margin-left: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

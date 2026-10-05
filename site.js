@@ -35,6 +35,11 @@
     const данные = navigator.userAgentData;
     const строка = navigator.userAgent;
     const платформа = (данные && данные.platform) || navigator.platform || '';
+    // Телефон и планшет — раньше Мака: iPhone пишет в user-agent «like Mac OS X»,
+    // а iPad и вовсе выдаёт себя за Mac (MacIntel) и отличается только касаниями.
+    // Ставить на них нечего, и кнопка «Скачать для Mac» там была бы враньём.
+    if (/iPhone|iPad|iPod|Android/i.test(строка) || (данные && данные.mobile)) return 'other';
+    if (/Mac/i.test(платформа) && (navigator.maxTouchPoints || 0) > 1) return 'other';
     if (/Win/i.test(платформа) || /Windows/i.test(строка)) return 'win';
     if (/Mac/i.test(платформа) || /Mac OS X/i.test(строка)) {
       // Apple Silicon не признаётся в user-agent: Safari и Chrome одинаково пишут
